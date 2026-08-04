@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz — LLM, RAG e Agentes de IA</title>
+<style>
+  :root{
+    --bordo:#7A1533;
+    --bordo-esc:#4A0E1A;
+    --vinho:#9E1B3A;
+    --dourado:#B8862B;
+    --dourado-cl:#D4A24A;
+    --rose:#F0D8DE;
+    --cinza:#5A4750;
+    --papel:#FBF5F6;
+    --verde:#2E7D5B;
+    --verde-bg:#E6F2EC;
+    --erro:#B03A2E;
+    --erro-bg:#F7E7E4;
+    --linha:#E8D3D9;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:'Segoe UI',system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+    background:
+      radial-gradient(1200px 600px at 100% -10%, rgba(122,21,51,.12), transparent 60%),
+      radial-gradient(900px 500px at -10% 110%, rgba(184,134,43,.12), transparent 55%),
+      var(--papel);
+    color:var(--cinza);
+    min-height:100vh;
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    padding:32px 18px 64px;
+    line-height:1.55;
+  }
+  .wrap{width:100%;max-width:720px}
+
+  /* ---------- Cabeçalho ---------- */
+  .brand{margin-bottom:22px}
+  .eyebrow{
+    font-size:12px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;
+    color:var(--vinho);margin-bottom:6px;
+  }
+  .brand h1{
+    font-family:Georgia,'Times New Roman',serif;
+    font-size:30px;line-height:1.15;color:var(--bordo);font-weight:700;
+  }
+  .brand .sig{font-size:13px;color:#8A7278;margin-top:6px}
+  .brand .sig b{color:var(--bordo)}
+
+  /* ---------- Barra de progresso ---------- */
+  .progress{
+    display:flex;align-items:center;gap:12px;margin:18px 0 14px;
+  }
+  .bar{flex:1;height:8px;background:var(--linha);border-radius:99px;overflow:hidden}
+  .bar>i{
+    display:block;height:100%;width:0%;border-radius:99px;
+    background:linear-gradient(90deg,var(--vinho),var(--dourado-cl));
+    transition:width .45s cubic-bezier(.4,0,.2,1);
+  }
+  .count{font-size:13px;font-weight:700;color:var(--bordo);white-space:nowrap}
+  .score-chip{
+    font-size:13px;font-weight:700;color:var(--dourado);
+    background:#fff;border:1px solid var(--linha);border-radius:99px;
+    padding:3px 11px;white-space:nowrap;
+  }
+
+  /* ---------- Card ---------- */
+  .card{
+    background:#fff;border:1px solid var(--linha);border-radius:18px;
+    box-shadow:0 18px 40px -24px rgba(74,14,26,.45);
+    padding:28px 26px 26px;
+  }
+  .tag{
+    display:inline-block;font-size:11px;font-weight:700;letter-spacing:1.5px;
+    text-transform:uppercase;color:#fff;background:var(--bordo);
+    padding:4px 11px;border-radius:99px;margin-bottom:16px;
+  }
+  .tag.rag{background:var(--vinho)}
+  .tag.agente{background:var(--dourado)}
+  .tag.transversal{background:#6b4a52}
+
+  .prompt-label{
+    font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+    color:#8A7278;margin-bottom:8px;
+  }
+  .statement{
+    font-size:20px;line-height:1.45;color:#3a2c31;font-weight:600;
+    margin-bottom:22px;
+  }
+  .statement .q{font-family:Georgia,serif}
+
+  /* ---------- Botões V/F ---------- */
+  .choices{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .choice{
+    appearance:none;cursor:pointer;font:inherit;
+    border:2px solid var(--linha);background:#fff;color:var(--cinza);
+    border-radius:14px;padding:16px 14px;text-align:center;
+    font-weight:700;font-size:16px;
+    transition:transform .12s ease,border-color .15s,background .15s,box-shadow .15s;
+    display:flex;flex-direction:column;align-items:center;gap:4px;
+  }
+  .choice .ic{font-size:22px;line-height:1}
+  .choice .sub{font-size:11px;font-weight:600;letter-spacing:.3px;color:#9a8087;text-transform:uppercase}
+  .choice:hover:not(:disabled){border-color:var(--vinho);transform:translateY(-2px);box-shadow:0 10px 20px -14px rgba(122,21,51,.5)}
+  .choice:focus-visible{outline:3px solid var(--dourado-cl);outline-offset:2px}
+  .choice.true.picked,.choice.false.picked{border-width:2px}
+  .choice:disabled{cursor:default}
+  .choice.correct{border-color:var(--verde);background:var(--verde-bg);color:var(--verde)}
+  .choice.correct .sub{color:var(--verde)}
+  .choice.wrong{border-color:var(--erro);background:var(--erro-bg);color:var(--erro)}
+  .choice.wrong .sub{color:var(--erro)}
+  .choice.faded{opacity:.5}
+
+  /* ---------- Explicação ---------- */
+  .explain{
+    margin-top:20px;border-radius:14px;padding:16px 16px 16px 18px;
+    border-left:5px solid var(--dourado);background:#FBF3E4;
+    font-size:15px;line-height:1.55;
+    max-height:0;opacity:0;overflow:hidden;padding-top:0;padding-bottom:0;
+    transition:max-height .45s ease,opacity .35s ease,padding .35s ease;
+  }
+  .explain.show{max-height:420px;opacity:1;padding-top:16px;padding-bottom:16px}
+  .explain .verdict{font-weight:800;display:block;margin-bottom:6px;font-size:15px}
+  .explain.ok{border-left-color:var(--verde);background:var(--verde-bg)}
+  .explain.ok .verdict{color:var(--verde)}
+  .explain.no{border-left-color:var(--erro);background:var(--erro-bg)}
+  .explain.no .verdict{color:var(--erro)}
+  .explain p{color:#4a3a40}
+  .explain .why{margin-top:8px;font-size:13.5px;color:#6b565d}
+  .explain .why b{color:var(--bordo)}
+
+  /* ---------- Rodapé de navegação ---------- */
+  .nav{display:flex;justify-content:flex-end;margin-top:20px;min-height:48px;align-items:center}
+  .next{
+    appearance:none;cursor:pointer;font:inherit;font-weight:700;font-size:15px;
+    color:#fff;background:var(--bordo);border:none;border-radius:12px;
+    padding:13px 26px;transition:background .15s,transform .12s,opacity .2s;
+    display:inline-flex;align-items:center;gap:8px;
+  }
+  .next:hover{background:var(--vinho);transform:translateY(-1px)}
+  .next:focus-visible{outline:3px solid var(--dourado-cl);outline-offset:2px}
+  .next[hidden]{display:none}
+
+  /* ---------- Tela de resultado ---------- */
+  .result{text-align:center;padding:34px 26px 30px}
+  .result .ring{
+    width:150px;height:150px;margin:6px auto 18px;position:relative;
+  }
+  .result .ring svg{transform:rotate(-90deg)}
+  .result .ring .pct{
+    position:absolute;inset:0;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+  }
+  .result .ring .pct b{font-size:38px;color:var(--bordo);font-family:Georgia,serif;line-height:1}
+  .result .ring .pct span{font-size:12px;color:#8A7278;font-weight:700;letter-spacing:1px;margin-top:2px}
+  .result h2{font-family:Georgia,serif;color:var(--bordo);font-size:26px;margin-bottom:8px}
+  .result .tier{font-weight:700;color:var(--dourado);font-size:15px;margin-bottom:14px;letter-spacing:.3px}
+  .result p.msg{font-size:15px;color:#4a3a40;max-width:460px;margin:0 auto 22px}
+  .result .tally{
+    display:flex;gap:14px;justify-content:center;margin-bottom:24px;flex-wrap:wrap;
+  }
+  .result .tally div{
+    background:#fff;border:1px solid var(--linha);border-radius:12px;
+    padding:12px 18px;min-width:96px;
+  }
+  .result .tally .n{font-size:26px;font-weight:800;font-family:Georgia,serif;line-height:1}
+  .result .tally .l{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:#8A7278;margin-top:4px;font-weight:700}
+  .result .tally .hit .n{color:var(--verde)}
+  .result .tally .miss .n{color:var(--erro)}
+  .result .restart{
+    appearance:none;cursor:pointer;font:inherit;font-weight:700;font-size:15px;
+    color:var(--bordo);background:#fff;border:2px solid var(--bordo);border-radius:12px;
+    padding:12px 26px;transition:background .15s,color .15s;
+  }
+  .result .restart:hover{background:var(--bordo);color:#fff}
+
+  .foot{text-align:center;font-size:12px;color:#9a8087;margin-top:22px}
+
+  @media (max-width:520px){
+    .brand h1{font-size:24px}
+    .statement{font-size:18px}
+    .card{padding:22px 18px}
+    .choice{font-size:15px;padding:14px 10px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none!important}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="brand">
+    <div class="eyebrow">Workshop de IA · Verdadeiro ou Falso</div>
+    <h1>LLM, RAG &amp; Agentes</h1>
+    <div class="sig">Cada afirmação parece correta. Uma é <b>verdadeira</b>; a outra é <b>quase certa</b> — plausível, mas errada. Decida.</div>
+  </div>
+
+  <div class="progress" id="progress">
+    <span class="count" id="count">1 / 12</span>
+    <div class="bar"><i id="barfill"></i></div>
+    <span class="score-chip" id="scorechip">0 acertos</span>
+  </div>
+
+  <div id="app"></div>
+
+  <div class="foot">Material de apoio · Marco Aurélio — Analista · GTIC · Hemobras</div>
+</div>
+
+<script>
+/* ==========================================================
+   BANCO DE PERGUNTAS
+   answer: true  -> a afirmação é VERDADEIRA
+   answer: false -> a afirmação é FALSA (a "quase certa")
+   ========================================================== */
+const QUESTIONS = [
+  {
+    cat:"LLM", tag:"tag",
+    statement:"Um LLM não “sabe” fatos: ele calcula qual é a continuação de texto mais provável a partir do que aprendeu.",
+    answer:true,
+    explainTrue:"Exato. O modelo prevê a sequência mais provável de palavras. A fluência dá impressão de conhecimento, mas por baixo é estatística de linguagem — por isso ele pode soar seguro mesmo quando erra.",
+    explainFalse:"Parece razoável dizer que ele “consulta uma base de fatos”, mas não é assim que um LLM funciona por padrão."
+  },
+  {
+    cat:"LLM", tag:"tag",
+    statement:"Quando um LLM inventa uma informação que soa convincente mas é falsa, isso é chamado de “cache corrompido”.",
+    answer:false,
+    explainTrue:"",
+    explainFalse:"Quase certo no espírito, errado no termo. O fenômeno existe e é real, mas o nome correto é “alucinação”, não “cache corrompido”. Ele ocorre porque o modelo preenche lacunas com o que parece plausível."
+  },
+  {
+    cat:"LLM", tag:"tag",
+    statement:"Um LLM “puro”, sem integração, já conhece os POPs e registros internos da Hemobras se você citar o nome da empresa.",
+    answer:false,
+    explainTrue:"",
+    explainFalse:"Tentador, mas falso. O modelo só sabe o que estava nos textos públicos do treinamento. Ele nunca leu nossos documentos internos — citar o nome da empresa não muda isso. Para responder sobre eles, é preciso entregar os documentos (RAG)."
+  },
+  {
+    cat:"RAG", tag:"rag",
+    statement:"No RAG, o sistema primeiro busca trechos relevantes nos seus documentos e só então o LLM redige a resposta com base neles.",
+    answer:true,
+    explainTrue:"Isso mesmo. “Busca, depois gera.” O RAG recupera os trechos certos dos nossos arquivos e os entrega ao modelo como contexto — a resposta passa a vir dos nossos documentos, e pode citar a fonte.",
+    explainFalse:"É a ordem correta do RAG: recuperação primeiro, geração depois."
+  },
+  {
+    cat:"RAG", tag:"rag",
+    statement:"A grande vantagem do RAG é que, ao atualizar um POP, é preciso re-treinar o modelo para que a resposta mude.",
+    answer:false,
+    explainTrue:"",
+    explainFalse:"Quase certo, mas invertido. A vantagem é justamente o contrário: você NÃO re-treina nada. Atualizou o documento, a resposta passa a refletir a versão nova na próxima consulta. O conhecimento fica vivo sem re-treino."
+  },
+  {
+    cat:"RAG", tag:"rag",
+    statement:"O RAG reduz bastante as alucinações, mas não as elimina: se a busca trouxer o trecho errado, a resposta ainda pode sair imprecisa.",
+    answer:true,
+    explainTrue:"Correto. Prender a resposta aos documentos corta boa parte das invenções, porém a qualidade depende da qualidade da busca. Por isso a citação da fonte é essencial: ela permite conferir cada resposta.",
+    explainFalse:"É uma leitura madura e correta do RAG — ele mitiga, não zera o risco."
+  },
+  {
+    cat:"RAG", tag:"rag",
+    statement:"Um RAG é essencialmente igual a um buscador do SharePoint: os dois devolvem uma lista de documentos para você ler.",
+    answer:false,
+    explainTrue:"",
+    explainFalse:"Chega perto, mas confunde as coisas. Um buscador devolve uma lista para você ler; o RAG lê os documentos por você e entrega uma resposta redigida, com a fonte. É “aqui estão 40 POPs” versus “a especificação é X, conforme o POP 123, seção 4”."
+  },
+  {
+    cat:"Agentes", tag:"agente",
+    statement:"O que diferencia um agente de um chat comum é que o agente planeja passos, usa ferramentas e executa a tarefa até concluir.",
+    answer:true,
+    explainTrue:"Isso. O chat responde e para; o agente encadeia passos sozinho — busca, analisa, escreve, salva. Sai do “responder” para o “fazer”, sempre dentro dos limites e aprovações que você definir.",
+    explainFalse:"É exatamente a distinção central: agentes agem em vários passos, o chat apenas responde."
+  },
+  {
+    cat:"Agentes", tag:"agente",
+    statement:"Como o agente age sozinho, a responsabilidade legal por um erro passa a ser da própria IA, e não da organização.",
+    answer:false,
+    explainTrue:"",
+    explainFalse:"Soa lógico, mas é falso — e perigoso. A IA não assume responsabilidade legal. A responsabilidade continua da organização e das pessoas que supervisionam. Por isso mantém-se um humano responsável no circuito em qualquer passo que afete qualidade ou dados regulados."
+  },
+  {
+    cat:"Agentes", tag:"agente",
+    statement:"A autonomia de um agente é ajustável, como um botão de volume: pode ir de “só sugere” até “executa dentro de limites”.",
+    answer:true,
+    explainTrue:"Correto. Autonomia é um dial, não um interruptor. Em ambiente regulado, começa-se com o humano aprovando cada passo crítico e só se amplia conforme a confiança e as evidências crescem.",
+    explainFalse:"É a metáfora certa: autonomia é gradual e configurável, não tudo-ou-nada."
+  },
+  {
+    cat:"Transversal", tag:"transversal",
+    statement:"O jeito mais seguro de começar é por um caso textual, repetitivo, com documentos organizados e sem decisão crítica.",
+    answer:true,
+    explainTrue:"Isso mesmo. Menor risco, maior dor: por exemplo, consulta assistida a POPs com o humano conferindo. Piloto pequeno, métrica clara, e só ampliar se der resultado.",
+    explainFalse:"É a recomendação central: começar pequeno, no caso de menor risco e dor real."
+  },
+  {
+    cat:"Transversal", tag:"transversal",
+    statement:"Por serem dados comuns, informações de doadores e pacientes podem ir para qualquer ferramenta de IA gratuita sem restrição.",
+    answer:false,
+    explainTrue:"",
+    explainFalse:"Falso, e é um ponto crítico. Dado de saúde é dado sensível sob a LGPD. Só deve trafegar em ferramentas homologadas, com dados minimizados ou anonimizados e infraestrutura controlada — com o DPO e a segurança envolvidos desde o início."
+  }
+];
+
+/* ==========================================================
+   ESTADO E RENDERIZAÇÃO
+   ========================================================== */
+const app = document.getElementById('app');
+const barfill = document.getElementById('barfill');
+const countEl = document.getElementById('count');
+const scoreChip = document.getElementById('scorechip');
+const progressEl = document.getElementById('progress');
+
+let idx = 0;
+let score = 0;
+let answered = false;
+const results = []; // true = acerto
+
+function updateProgress(){
+  const pct = (idx / QUESTIONS.length) * 100;
+  barfill.style.width = pct + '%';
+  countEl.textContent = (idx+1) + ' / ' + QUESTIONS.length;
+  scoreChip.textContent = score + (score === 1 ? ' acerto' : ' acertos');
+}
+
+function renderQuestion(){
+  answered = false;
+  const q = QUESTIONS[idx];
+  updateProgress();
+
+  app.innerHTML = `
+    <div class="card">
+      <span class="tag ${q.tag}">${q.cat}</span>
+      <div class="prompt-label">Esta afirmação é…</div>
+      <div class="statement"><span class="q">${q.statement}</span></div>
+      <div class="choices">
+        <button class="choice true" data-val="true">
+          <span class="ic">✓</span>Verdadeiro
+          <span class="sub">Está correta</span>
+        </button>
+        <button class="choice false" data-val="false">
+          <span class="ic">✕</span>Falso
+          <span class="sub">Quase certa, mas errada</span>
+        </button>
+      </div>
+      <div class="explain" id="explain">
+        <span class="verdict" id="verdict"></span>
+        <p id="explainText"></p>
+        <div class="why" id="whyText"></div>
+      </div>
+      <div class="nav">
+        <button class="next" id="nextBtn" hidden>
+          ${idx === QUESTIONS.length-1 ? 'Ver resultado' : 'Próxima'} <span aria-hidden="true">→</span>
+        </button>
+      </div>
+    </div>
+  `;
+
+  app.querySelectorAll('.choice').forEach(btn=>{
+    btn.addEventListener('click', ()=>handleAnswer(btn));
+  });
+  document.getElementById('nextBtn').addEventListener('click', advance);
+}
+
+function handleAnswer(btn){
+  if(answered) return;
+  answered = true;
+  const q = QUESTIONS[idx];
+  const picked = btn.dataset.val === 'true';
+  const correct = picked === q.answer;
+  if(correct) score++;
+  results.push(correct);
+
+  const btns = app.querySelectorAll('.choice');
+  btns.forEach(b=>{
+    b.disabled = true;
+    const bVal = b.dataset.val === 'true';
+    if(bVal === q.answer){ b.classList.add('correct'); }
+    else { b.classList.add('faded'); }
+  });
+  if(!correct){ btn.classList.remove('faded'); btn.classList.add('wrong'); }
+
+  // explicação
+  const exp = document.getElementById('explain');
+  const verdict = document.getElementById('verdict');
+  const text = document.getElementById('explainText');
+  const why = document.getElementById('whyText');
+
+  if(correct){
+    exp.classList.add('ok');
+    verdict.textContent = '✓ Você acertou!';
+  } else {
+    exp.classList.add('no');
+    verdict.textContent = '✕ Não é bem isso.';
+  }
+
+  // Monta o texto: mostramos a explicação do lado VERDADEIRO da questão.
+  if(q.answer === true){
+    text.textContent = q.explainTrue;
+    why.innerHTML = '<b>Por quê:</b> a afirmação está correta como enunciada.';
+  } else {
+    text.textContent = q.explainFalse;
+    why.innerHTML = '<b>A pegadinha:</b> a frase é “quase certa” — soa verdadeira, mas contém um erro que a torna falsa.';
+  }
+
+  requestAnimationFrame(()=>exp.classList.add('show'));
+  const nb = document.getElementById('nextBtn');
+  nb.hidden = false;
+  nb.focus();
+}
+
+function advance(){
+  idx++;
+  if(idx >= QUESTIONS.length){ renderResult(); }
+  else { renderQuestion(); }
+}
+
+/* ==========================================================
+   RESULTADO FINAL
+   ========================================================== */
+function renderResult(){
+  progressEl.style.display = 'none';
+  const total = QUESTIONS.length;
+  const pct = Math.round((score/total)*100);
+  const misses = total - score;
+
+  let tier, msg;
+  if(pct === 100){
+    tier = "Domínio pleno";
+    msg = "Nota máxima. Você distingue com clareza o conceito correto da versão “quase certa”. Está pronto para identificar oportunidades reais de IA na sua área e defendê-las.";
+  } else if(pct >= 75){
+    tier = "Sólido";
+    msg = "Muito bom. Você pegou a maioria das pegadinhas. Revise os pontos que escaparam e você terá um repertório confiável para conversar com o time de tecnologia.";
+  } else if(pct >= 50){
+    tier = "No caminho";
+    msg = "Base formada. Você já entende a direção, mas alguns conceitos “quase certos” ainda enganam. Vale reler o material de apoio nas partes que errou.";
+  } else {
+    tier = "Vale revisar";
+    msg = "Sem problema — o objetivo do quiz é justamente expor onde os conceitos confundem. Volte ao material de apoio e tente de novo; a segunda passada rende muito.";
+  }
+
+  const circ = 2 * Math.PI * 66;
+  const dash = (pct/100) * circ;
+
+  app.innerHTML = `
+    <div class="card result">
+      <div class="ring">
+        <svg width="150" height="150" viewBox="0 0 150 150">
+          <circle cx="75" cy="75" r="66" fill="none" stroke="#E8D3D9" stroke-width="12"/>
+          <circle cx="75" cy="75" r="66" fill="none" stroke="url(#grad)" stroke-width="12"
+                  stroke-linecap="round" stroke-dasharray="${dash} ${circ}" id="ringArc"/>
+          <defs>
+            <linearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#9E1B3A"/>
+              <stop offset="1" stop-color="#D4A24A"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <div class="pct"><b>${pct}%</b><span>${score} de ${total}</span></div>
+      </div>
+      <h2>Quiz concluído</h2>
+      <div class="tier">${tier}</div>
+      <p class="msg">${msg}</p>
+      <div class="tally">
+        <div class="hit"><div class="n">${score}</div><div class="l">Acertos</div></div>
+        <div class="miss"><div class="n">${misses}</div><div class="l">Erros</div></div>
+      </div>
+      <button class="restart" id="restart">Refazer o quiz</button>
+    </div>
+  `;
+
+  // anima o anel
+  const arc = document.getElementById('ringArc');
+  arc.style.strokeDasharray = `0 ${circ}`;
+  requestAnimationFrame(()=>{
+    arc.style.transition = 'stroke-dasharray 1s cubic-bezier(.4,0,.2,1)';
+    arc.style.strokeDasharray = `${dash} ${circ}`;
+  });
+
+  document.getElementById('restart').addEventListener('click', ()=>{
+    idx = 0; score = 0; results.length = 0;
+    progressEl.style.display = 'flex';
+    renderQuestion();
+  });
+}
+
+/* start */
+renderQuestion();
+</script>
+</body>
+</html>
