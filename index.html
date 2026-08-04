@@ -178,6 +178,32 @@
   }
   .result .restart:hover{background:var(--bordo);color:#fff}
 
+  /* bloco de aprovação (score > 15) */
+  .approval{
+    margin:6px auto 22px;max-width:520px;
+    background:linear-gradient(150deg, #FBF3E4, #F7ECEF);
+    border:1.5px solid var(--dourado-cl);border-radius:16px;
+    padding:22px 22px 24px;
+    box-shadow:0 16px 34px -22px rgba(184,134,43,.6);
+    animation:approvalIn .5s cubic-bezier(.2,.8,.2,1) both;
+  }
+  @keyframes approvalIn{
+    0%{opacity:0;transform:translateY(12px) scale(.97)}
+    100%{opacity:1;transform:none}
+  }
+  .approval-badge{
+    font-family:Georgia,serif;font-size:22px;font-weight:800;color:var(--bordo);
+    margin-bottom:10px;
+  }
+  .approval-msg{
+    font-size:15px;color:#4a3a40;line-height:1.6;margin-bottom:18px;
+  }
+  .approval-msg b{color:var(--bordo)}
+  .approval-cta{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    width:100%;max-width:100%;margin-top:0;text-decoration:none;
+  }
+
   .foot{text-align:center;font-size:12px;color:#9a8087;margin-top:22px}
 
   /* ===================================================================
@@ -908,6 +934,15 @@ function renderResult(){
   const circ = 2 * Math.PI * 66;
   const dash = (pct/100) * circ;
 
+  // aprovação: mais de 15 acertos (16+) libera a chamada para sugerir ferramenta
+  const aprovado = score > 15;
+  const approvalBlock = aprovado ? `
+      <div class="approval">
+        <div class="approval-badge">🎉 Parabéns!</div>
+        <p class="approval-msg">Você já pode ajudar a Hemobras sugerindo uma ferramenta de IA interna usando <b>LLM</b>, <b>RAG</b> e <b>Agentes</b>. Clique no formulário e sugira sua ferramenta.</p>
+        <a class="btn-gold approval-cta" href="https://docs.google.com/forms/d/e/1FAIpQLSepoSFj89B48Sg12n0D83Eo8TGfh_bDJ7DyiX3hLTCwdiizQQ/viewform?usp=publish-editor" target="_blank" rel="noopener">Sugerir minha ferramenta de IA ↗</a>
+      </div>` : '';
+
   app.innerHTML = `
     <div class="card result">
       <div class="ring">
@@ -931,6 +966,7 @@ function renderResult(){
         <div class="hit"><div class="n">${score}</div><div class="l">Acertos</div></div>
         <div class="miss"><div class="n">${misses}</div><div class="l">Erros</div></div>
       </div>
+      ${approvalBlock}
       <button class="restart" id="restart">Refazer o quiz</button>
     </div>
   `;
