@@ -498,7 +498,7 @@
       <button class="path" id="pathTraining" type="button">
         <div class="pico">🎓</div>
         <h3>Fazer treinamento</h3>
-        <p>Assista ao vídeo, veja a apresentação e leia a lista de perguntas — tudo dentro da aplicação.</p>
+        <p>Vídeo, apresentação, lista de perguntas e um exemplo prático — tudo dentro da aplicação.</p>
         <span class="cta">Abrir treinamento <span aria-hidden="true">→</span></span>
       </button>
 
@@ -521,7 +521,7 @@
       <span>Hemobras</span>
     </div>
     <div class="greet">Materiais de treinamento</div>
-    <div class="sub">Escolha um dos três — todos abrem aqui na aplicação.</div>
+    <div class="sub">Escolha um dos materiais — todos abrem aqui na aplicação.</div>
 
     <div class="paths">
       <button class="path" id="tVideo" type="button">
@@ -543,6 +543,13 @@
         <h3>Lista de perguntas</h3>
         <p>O material de apoio com perguntas e respostas, das mais comuns às mais difíceis.</p>
         <span class="cta">Abrir a lista <span aria-hidden="true">→</span></span>
+      </button>
+
+      <button class="path" id="tExemplo" type="button">
+        <div class="pico">💡</div>
+        <h3>Exemplo prático</h3>
+        <p>Uso de LLM e RAG na Hemobras — um caso aplicado, em vídeo.</p>
+        <span class="cta">Assistir <span aria-hidden="true">→</span></span>
       </button>
     </div>
 
@@ -1085,6 +1092,15 @@ const MATERIALS = {
     ratio:   "ratio-doc",
     allow:   "",
   },
+  exemplo: {
+    eyebrow: "Treinamento Hemobras · Exemplo prático",
+    title:   "Exemplo prático de LLM e RAG na Hemobras",
+    lede:    "Um caso aplicado do uso de LLM e RAG na Hemobras, em vídeo.",
+    embed:   "https://www.youtube.com/embed/CFrANheqjTc?rel=0",
+    newtab:  "https://youtu.be/CFrANheqjTc",
+    ratio:   "ratio-video",
+    allow:   "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share",
+  },
 };
 
 function openMaterial(key){
@@ -1108,6 +1124,7 @@ function openMaterial(key){
 document.getElementById('tVideo').addEventListener('click', ()=>openMaterial('video'));
 document.getElementById('tApres').addEventListener('click', ()=>openMaterial('apres'));
 document.getElementById('tFaq').addEventListener('click', ()=>openMaterial('faq'));
+document.getElementById('tExemplo').addEventListener('click', ()=>openMaterial('exemplo'));
 
 // --- Visualizador: voltar ao submenu de treinamento ---
 document.getElementById('viewerBack').addEventListener('click', ()=>showScreen('training'));
