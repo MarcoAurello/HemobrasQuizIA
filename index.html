@@ -201,7 +201,7 @@
   </div>
 
   <div class="progress" id="progress">
-    <span class="count" id="count">1 / 12</span>
+    <span class="count" id="count">1 / 20</span>
     <div class="bar"><i id="barfill"></i></div>
     <span class="score-chip" id="scorechip">0 acertos</span>
   </div>
@@ -301,6 +301,62 @@ const QUESTIONS = [
     answer:false,
     explainTrue:"",
     explainFalse:"Falso, e é um ponto crítico. Dado de saúde é dado sensível sob a LGPD. Só deve trafegar em ferramentas homologadas, com dados minimizados ou anonimizados e infraestrutura controlada — com o DPO e a segurança envolvidos desde o início."
+  },
+  {
+    cat:"LLM", tag:"tag",
+    statement:"Para usar bem um LLM não é preciso programar; o que mais influencia a qualidade da resposta é como você formula o pedido (o prompt).",
+    answer:true,
+    explainTrue:"Correto. Você conversa em português normal. A habilidade que importa é pedir bem — dar contexto, papel, formato e foco. Um pedido preciso rende uma resposta útil; um pedido vago rende algo genérico.",
+    explainFalse:"É verdade: a competência-chave é saber pedir, não saber programar."
+  },
+  {
+    cat:"LLM", tag:"tag",
+    statement:"A “janela de contexto” é o limite de tempo que o LLM leva para responder antes de expirar a sessão.",
+    answer:false,
+    explainTrue:"",
+    explainFalse:"Quase convincente, mas errado. Janela de contexto é o quanto de texto o modelo consegue considerar de uma vez — a pergunta mais os documentos anexados. Não tem a ver com tempo; se um dossiê é maior que a janela, ele não “enxerga” tudo de uma vez."
+  },
+  {
+    cat:"LLM", tag:"tag",
+    statement:"LLMs podem reproduzir vieses presentes nos dados de treinamento, o que exige supervisão humana em decisões que afetem pessoas.",
+    answer:true,
+    explainTrue:"Isso mesmo. Como aprendem de textos humanos, podem herdar vieses. Em triagem ou priorização que afete pessoas, isso é risco real e pede supervisão, testes e documentação — IA como apoio, nunca como decisor autônomo.",
+    explainFalse:"É uma preocupação legítima e correta: viés existe e exige controle humano."
+  },
+  {
+    cat:"RAG", tag:"rag",
+    statement:"Um RAG bem construído respeita automaticamente as permissões de acesso, sem que isso precise ser desenhado no projeto.",
+    answer:false,
+    explainTrue:"",
+    explainFalse:"Parece razoável, mas é falso. Respeitar permissões — cada usuário só recebe respostas dos documentos que já pode acessar — precisa ser desenhado explicitamente. Não é automático, e é um requisito essencial quando há dados restritos."
+  },
+  {
+    cat:"RAG", tag:"rag",
+    statement:"Os documentos que alimentam um RAG podem permanecer na infraestrutura da Hemobras, sem precisar sair para a nuvem de um fornecedor.",
+    answer:true,
+    explainTrue:"Correto. O RAG pode ser montado em infraestrutura controlada, com os documentos ficando nos nossos repositórios. É possível até usar modelos hospedados internamente quando a sensibilidade do dado exige.",
+    explainFalse:"É verdade: manter os documentos internos é uma opção real de arquitetura do RAG."
+  },
+  {
+    cat:"Agentes", tag:"agente",
+    statement:"Como um agente decide sozinho o caminho diante de situações não roteirizadas, ele deve sempre substituir automações simples do tipo “se A, faça B”.",
+    answer:false,
+    explainTrue:"",
+    explainFalse:"Meio verdade, meio armadilha. O agente brilha onde há variação e julgamento textual, mas onde as regras já são claras e fixas, uma automação simples (RPA/script) é mais previsível e barata. Agente não substitui automação boa — complementa."
+  },
+  {
+    cat:"Transversal", tag:"transversal",
+    statement:"Para saber se uma solução de IA compensa, basta adotá-la; o retorno aparece naturalmente com o tempo, sem precisar medir.",
+    answer:false,
+    explainTrue:"",
+    explainFalse:"Falso. O ganho só se prova medindo: escolha uma métrica antes (horas economizadas, erros evitados, tempo de resposta), rode um piloto e compare. Alguns casos economizam muito; outros não valem a pena — a disciplina de medir separa investimento de desperdício."
+  },
+  {
+    cat:"Agentes", tag:"agente",
+    statement:"Numa cadeia de vários passos, um erro pequeno no início pode se propagar, por isso usam-se verificações e aprovações humanas entre as etapas.",
+    answer:true,
+    explainTrue:"Correto. O acúmulo de erro é um risco real do encadeamento. Mitiga-se com checagens entre etapas, pontos de aprovação humana e escopo estreito — quanto mais longa e autônoma a cadeia, mais pontos de controle ela exige.",
+    explainFalse:"É uma leitura correta: cadeias longas acumulam erro e pedem pontos de controle."
   }
 ];
 
