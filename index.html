@@ -276,25 +276,92 @@
   /* grid de 2 botões (menu principal) fica centralizado */
   .paths-2{max-width:640px;margin:0 auto}
 
+  /* logo na capa */
+  .logo-cover{width:74px;height:auto;margin:0 auto 20px;display:block}
+
+  /* barra de marca (logo + nome) no topo dos menus */
+  .brandbar{
+    display:flex;align-items:center;justify-content:center;gap:11px;margin-bottom:26px;
+  }
+  .brandbar img{width:38px;height:auto}
+  .brandbar span{
+    font-family:Georgia,serif;font-size:22px;font-weight:700;letter-spacing:.5px;
+  }
+  .brandbar.light span{color:#fff}
+  .brandbar.dark span{color:var(--bordo)}
+
+  /* caixa de conclusão + checkbox */
+  .complete-box{
+    max-width:520px;margin:26px auto 0;text-align:center;
+    background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);
+    border-radius:16px;padding:22px 22px 20px;
+  }
+  .check-line{
+    display:flex;align-items:center;gap:12px;cursor:pointer;
+    justify-content:flex-start;text-align:left;margin-bottom:16px;
+  }
+  .check-line input{position:absolute;opacity:0;width:0;height:0}
+  .checkmark{
+    width:26px;height:26px;border-radius:7px;flex:0 0 auto;
+    background:rgba(255,255,255,.12);border:2px solid rgba(255,255,255,.5);
+    display:flex;align-items:center;justify-content:center;transition:all .15s;
+  }
+  .checkmark::after{
+    content:"✓";color:var(--bordo-esc);font-size:16px;font-weight:900;
+    opacity:0;transform:scale(.5);transition:all .15s;
+  }
+  .check-line input:checked ~ .checkmark{
+    background:var(--dourado-cl);border-color:var(--dourado-cl);
+  }
+  .check-line input:checked ~ .checkmark::after{opacity:1;transform:scale(1)}
+  .check-line input:focus-visible ~ .checkmark{outline:3px solid #fff;outline-offset:2px}
+  .check-text{color:#fff;font-size:15px;font-weight:600;line-height:1.4}
+  .quiz-go{width:100%;max-width:100%;margin-top:0}
+  .quiz-go:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+  .quiz-hint{font-size:12.5px;color:rgba(255,255,255,.6);margin-top:10px}
+  .quiz-hint.ready{color:var(--dourado-cl);font-weight:700}
+
+  /* card do quiz bloqueado (menu principal) */
+  .path.locked{opacity:.55;cursor:not-allowed}
+  .path.locked:hover{transform:none;background:rgba(255,255,255,.07);
+    border-color:rgba(255,255,255,.2);box-shadow:none}
+  .path.locked .pico{background:rgba(255,255,255,.1)}
+  .path .lock-ic{font-size:15px}
+  .path.unlocked{opacity:1;cursor:pointer}
+  .path.unlocked .pico{background:rgba(212,162,74,.32)}
+  .path.unlocked .cta{color:var(--dourado-cl)}
+  .path.unlocked.pulse{animation:cardpulse 1.1s ease}
+  @keyframes cardpulse{
+    0%{box-shadow:0 0 0 0 rgba(212,162,74,.5)}
+    100%{box-shadow:0 0 0 16px rgba(212,162,74,0)}
+  }
+
   /* nome do participante no topo do quiz */
   .whoami{
     font-size:12px;color:#8A7278;margin-bottom:2px;
   }
   .whoami b{color:var(--bordo)}
 
-  /* visualizador em iframe (vídeo 16:9 / documentos mais altos) */
+  /* logo pequeno no topo do visualizador e do quiz */
+  .mini-brand{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+  .mini-brand img{width:26px;height:auto}
+  .mini-brand span{font-family:Georgia,serif;font-weight:700;font-size:15px;color:var(--bordo)}
+
+  /* visualizador em iframe — CAIXA MAIOR */
   .viewer-frame{
     position:relative;width:100%;
     border-radius:16px;overflow:hidden;background:#000;
     border:1px solid var(--linha);box-shadow:0 20px 44px -26px rgba(74,14,26,.6);
     margin-bottom:8px;
   }
-  .viewer-frame.ratio-video{padding-top:56.25%}      /* 16:9 para vídeo */
-  .viewer-frame.ratio-doc{height:78vh;min-height:520px} /* documentos: altura alta */
+  .viewer-frame.ratio-video{padding-top:56.25%}          /* 16:9 para vídeo */
+  .viewer-frame.ratio-doc{height:88vh;min-height:640px}  /* documentos: bem alto */
   .viewer-frame iframe{
     position:absolute;inset:0;width:100%;height:100%;border:0;
   }
   .viewer-frame.ratio-doc iframe{position:relative}
+  /* visualizador de documento ocupa mais largura */
+  #screen-viewer .reader{max-width:1040px}
 
   /* ===================================================================
      TELA · MATERIAL DE TREINAMENTO (leitura interna)
@@ -403,8 +470,8 @@
 <!-- ================= TELA 1 · CAPA (NOME) ================= -->
 <section class="screen active" id="screen-cover">
   <div class="cover">
-    <div class="badge">🧠</div>
-    <div class="eyebrow">Treinamento Hemobras</div>
+    <img class="logo-cover" src="data:image/png;base64,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" alt="Hemobras" />
+    <div class="eyebrow">Hemobras · Treinamento</div>
     <h1>Treinamento<br>Conceitos de IA</h1>
     <p class="lede">LLM, RAG e Agentes — do conceito à oportunidade. Comece digitando seu nome.</p>
     <div class="field">
@@ -420,6 +487,10 @@
 <!-- ================= TELA 2 · MENU PRINCIPAL (2 CAMINHOS) ================= -->
 <section class="screen" id="screen-menu">
   <div class="menu">
+    <div class="brandbar light">
+      <img src="data:image/png;base64,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" alt="Hemobras" />
+      <span>Hemobras</span>
+    </div>
     <div class="greet">Olá, <span class="nm" id="greetName">participante</span> 👋</div>
     <div class="sub">Por onde você quer começar?</div>
 
@@ -431,11 +502,11 @@
         <span class="cta">Abrir treinamento <span aria-hidden="true">→</span></span>
       </button>
 
-      <button class="path" id="pathQuiz" type="button">
+      <button class="path locked" id="pathQuiz" type="button" aria-disabled="true">
         <div class="pico">✏️</div>
-        <h3>Fazer o quiz</h3>
-        <p>20 afirmações de verdadeiro ou falso. Cada uma parece certa — descubra qual é a “quase certa”.</p>
-        <span class="cta">Começar o quiz <span aria-hidden="true">→</span></span>
+        <h3>Fazer o quiz <span class="lock-ic" id="lockIc">🔒</span></h3>
+        <p id="quizDesc">Conclua o treinamento primeiro. Marque “treinamento concluído” dentro de <b>Fazer treinamento</b> para liberar.</p>
+        <span class="cta" id="quizCta">Bloqueado</span>
       </button>
     </div>
     <button class="back" id="backToCover">← Trocar de nome</button>
@@ -445,6 +516,10 @@
 <!-- ================= TELA 2b · SUBMENU DE TREINAMENTO (3 CAMINHOS) ================= -->
 <section class="screen" id="screen-training">
   <div class="menu">
+    <div class="brandbar light">
+      <img src="data:image/png;base64,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" alt="Hemobras" />
+      <span>Hemobras</span>
+    </div>
     <div class="greet">Materiais de treinamento</div>
     <div class="sub">Escolha um dos três — todos abrem aqui na aplicação.</div>
 
@@ -470,6 +545,17 @@
         <span class="cta">Abrir a lista <span aria-hidden="true">→</span></span>
       </button>
     </div>
+
+    <div class="complete-box">
+      <label class="check-line">
+        <input type="checkbox" id="doneCheck" />
+        <span class="checkmark" aria-hidden="true"></span>
+        <span class="check-text">Concluí o treinamento e quero fazer o questionário.</span>
+      </label>
+      <button class="btn-gold quiz-go" id="goQuiz" disabled>Fazer o quiz →</button>
+      <p class="quiz-hint" id="quizHintTxt">Marque a caixa acima para liberar o questionário.</p>
+    </div>
+
     <button class="back" id="trainingBack">← Voltar ao início</button>
   </div>
 </section>
@@ -483,7 +569,8 @@
     </div>
 
     <header class="reader-head">
-      <div class="eyebrow" id="viewerEyebrow">Treinamento Hemobras</div>
+      <div class="mini-brand"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPAAAAC+CAYAAAALB4KOAAAACXBIWXMAAAsTAAALEwEAmpwYAAAOIElEQVR4nO3df4xdZZ3H8S9QNNI28zwz087zTLGbbJBFWRFLcIOy62ajIvpP/UM3G9NIogF/oIidc2aK2b26IjLPc+c+55aG5n7PQLHGHwzKRlAUo3FFK0gQpCrgrwjEHxRWSzFZKE1nNmfK7ra0pzPzzL3nec7t55V8/53beXre97nn3HPnEgEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwLE06FUvGZf6wlToLanUO1OhfpBIdX8i1MOJ1PclUn8tFbqVCLXpysHT151oq5gMDa0elyNvT6S+OhH6llToexKpdydS/6ZLszsR+u5U6JlU6k/NP9bQ0Go6wXD72tOn23YTO9PizHwtd+a+3JmH2Zn7ObM/YGd25s5u6WTNCzudzql0opsY0OclQnEq1d5U6rlFj9D3jEv1gYbWp1H/OqkIKZXqPxKp9i9pfbowhx5T3ZpI9bbi30J9aqe1KzuZ/SBn9kd5ZucWO5yZvbkznU5rcgOdaMbl2lcnQn1z+QeZfjKRavOlRH31bPjCbru76mjLRz2YSnUx9ZFOp3MqO5vkmXlqKeEee8wd3Lr2bOp3DaIViVTXJFIf6OoBJvRPxwZGz6Wam1g9OpQK/eXwwZau88zEwHpJNddpTW5gZ36+/HAPG2ee58xe3Wg0VlA/2rxyZG0i1K5eHVyJUM+ODYxcQjWVDOgNiVSPBY904Xm0zk+WnNn35s4819V4j5y7bmh/eg31k3Gp1ydC/aKCg2t2XOoJqpnxgZF/TIXeF0Gci3uylPrpRKg3Us1wNnlVD8M97PzYPtLJrl1P/eBjq/RwcTW50gNsUF1JNTExpM5PhP5L6CiXPEI/U1yEpJrglvlQFfEedpHrV3mWjVAfnPN+P8AOcXBsUL+FInfV8LBOhH4ieIy+6yz0H7asXRv9QZpnk2/LM3uwyoAPnRfb/5yZmTmF6qp4TzHgAbanOO+meJ2USvXt0BEuP2L1TYrYjm1GdedKs/dO3KA62jyoXpVK/XzQg0vqmyhSqVDvCR1fF9f5XyhS7OznQ8X7wvnw/s7W5llUN6nUt4c+sOYvag2MvpYi82E646WpUL+PYH26M0I9XtxNR5HpZPb8kPEe9lL6VqqTMbHunCKeSM7TbqHIpFJdFnpdur7OUr+PIsOZ+UrweItd2JnZ6cz+LdVFIvW2iA6sA2Nr1iiKSHGfd+h16fo6C30vRSTPspE8swdCx/v/u7DJqA7eSXRKKtVToQ+ow2dM6A9TJNJB9crQ69GrmRgePZMiwc58NHi0R4zZ02g0TqY6vK8Z3e4g1W0UiUToK0KvR89G6MspEnlm7ggf7ZFTiw8+FDdRBD+Qjhq1lyIx/3HA4OvRm0mEvpkiMDc3dxI7sy+6gLPmFRS7Qx8PDH8wvXhiOQ9OhP5Z6LXo3agHKQLbp6bWhY71mOPMdopdKtSdUQYsRy+gCNTytsnFjtD7KAJ5y7wheKzHHBP1TS/z5v+yQ+gD6dhzUei1aRCdHMvbaz2a2eJ3DL3OHWcvjnQH3kWxS6V6IIID6ahJBvTG0GtT/AWR0OvQ64nhr6RMu+bG4LEeex6g2MUa8NiAfkfotUHA1eDMvCOCWBEwAg7/xFfHHZgRsD/swOWwA1eDEbA/BFwOAVeDEbA/BFwOAVeDEbA/BFwOAVeDEbA/BFwOAVeDEbA/BFwOAVeDEbA/BFwOAVeDEbA/BFwOAVeDEbA/BFwOAVeDEbA/BFwOAVeDEbA/BFwOAVeDEbA/BFwOAVeDEbA/BFwOAVeDEbA/BFwOAVeDEbA/BFwOAVeDEbA/BFwOAVeDEbA/BFwOAVeDEbA/BFwOAVeDEbA/BFwOAVeDEbA/BFwOAVeDEbA/BFwOAVeDEbA/BFwOAVeDEbA/BFwOAVeDEbA/BFwOAVeDEbA/BFwOAVeDEbA/BFwOAVeDEbA/BFwOAVeDEbA/BFwOAVeDEbA/BFwOAVeDEbA/BFwOAVeDEbA/BFyu+Pb64lvsQ38FaK8mkfpg8TtSYIyA/SHgBdZH6Gf6OOCnKQKMgP0h4ONLpN4dOrTejXqAIsAI2B8CXmB9hPpS+NB6NEJ9gSLACNgfAl5gfYS+PHhoPZpEqvdTBBgB+0PAx5esXveK0KH1aGYnBtb+NUWAEbA/BLyINRL6nr7bfYXaRZFgBOwPAS9sbGDkkj4MeBNFghGwPwS8sEuJTk2lfjR0dF2cXzeIVlAkGAH7Q8CLXaeRd/XN7jugN1JEGAH7Q8CLl0h1W+j4lj/qVooMI2B/CHjxJlaPDqVCPV7bnVfq304MrJcUGUbA/hDwUtdr5OxUqj/VMN6nx8S6cyhCjID9IeCl2zw48neJVP8VOsrFj3oqHRx5HUWKEbA/BOxny5A+KxXqkeh3XqEfmhgePZMixgjYHwL211izZlUi1HSkHzmcTYTizSMjKylyjID9IeDlG5f6wkSq70f0kvmuVI6+nmqCEbA/BNw9idB/n0h9U5DPEB96zB3FkwnVDCNgfwi4N3duFSGlUqfFS+xEqG8lQt+dSH1fV6b4WfM/c/7le1o8VvGYVFOMgP0hYAiNEbA/BAyhMQL2h4AhNEbA/hAwhMYI2B8ChtAYAftDwBAaI2B/CBhCYwTsDwFDaIyA/SHg3tpp7cp8auqMvN08r6szNXVG8bOpDzAC9oeAu6vTbA7nzlyWO3Nz7uxjeWbnejrFYxSP1W5e+tnrrhmiGmIE7A8Bd8f8rpiZWziz+3sebckUj82Znem0JjdQjTAC9oeAl2f71NS6+R0wULTlO7P54vR1k6NUA4yA/SFgf9OuuTF39s/BYy3bkZ3Zx237LoocI2B/CNhPnplPhQ50kRHP5s5+giLGCNgfAl663NmtocP0eEmdUaQYAftDwEuTO/tvwWP0j/jjFCFGwP4Q8OJ1nL14/iVp6BD95yC75kUUGUbA/hDw4uRTU4N5ZvZEEOGyhp394w7nBEWEEbA/BLw4uTPbQ8fXtXF2K0WEEbA/BLywG5vNl4e8QaP7AZvnp7fZv6JIMAL2h4AXVlzBDR5d92eKIsEI2B8CPr5Op3MqO/tkBMF1ecye4nejCDAC9oeAjy/Pmm8OH1tvhlv2nygCjID9IeAFDi5nP9O3AWf2aooAI2B/CHiBg8uZb/dtwM7eSRFgBOwPAS94cD3evwGbRykCjID9IeCFDq4+evvo6B34WYoAI2B/CLjcTKPxktCR9XpiuBLNCNgfAi7X6TRO6/+AG6dRYIyA/SHgcgi4GoyA/SHgcgi4GoyA/SHgcgi4GoyA/SHgcgi4GoyA/SHgcgi4GoyA/SHgcgi4GoyA/SHgcgi4GoyA/SHgcgi4GoyA/SHgcgi4GoyA/SHgcgi4GoyA/SHgcgi4GoyA/SHgcgi4GoyA/SHgcgi4GoyA/SHgcgi4GoyA/SHgcgi4GoyA/SHgcgi4GoyA+y/gZEBvpMAQcIVflJ6F/+MGx5gHKHaJ0HeHjrVkgn+LXqPROLnm30Z43Cl+t+J3jOFbH/MI1uOocWYXxS4V6s4IYj1qxuToBRSB3Jm/9HHA+ygCecu8Ic71sd+g2CVCcZQBr1mjKAJ5Zn8W+kDq4QH6IEVg+9TUutBrccxxZjvFLhlUV4aO9ehReykSnNmZvg04s1+iCMzNzZ2UZ/bp0Ovx4ulkzSsodhND6vzwwR45iVS3USSK/8S+DbhlPkSRYGe/Hno9XjzT7eZrKXbvJDolleqp0NEeMUJfTpHobG2e1bcBN5tnUiQ6kT1RsjNPxHCBb1ESqa6LZ/fVB7asXTtCEckz++PQB1TXD9DM/ogikmfZSJ7ZA6HX5bBxVBfjcu2rU6lnI9l9Zygyebt5aR8G/F6KTO7sl0OvywtzkFvXnk11kkr11eDxSj07Lta9hiLTbrdfmmfmdxEcWN0ZZx8rvjaGIpO3m+fF8L47Z+YrVDcTw6NnplI9F/bls7qRIjXdtpv6J+DJf6ZIsbOfCxuv3T/tJv+G6iiV+pPB4hX6iS2r1BqKVPFWBzvzreDxLXvMHRSxPMtG2NknA67Pv1JdNYhWJFJ/r/qdVx8cGxx9E0Xu0IUW84fwEXofnL+7of3paJ8k/xe75kXFeWiA9fnOzMzMKVRnE6tHhxKhHq40YqE/QjWRZ+acGG86WGg4s890WpMbqCZyZz5Q6Ro5+8s6PLktyrjU61OhHqkg3uLKd0o102lPvrFOEXNm9k47+w9UM3lmJiq5qOXMwzc2my+nfvKxVXo4lequ3u266r8ToTZRTbEz5+aZ/W0N4v1N8aqBaoqduYSdfbaH6/Pdz153zRD1oxfOif89lfr57p7zqp8U7z1TzV1//WdkcT9x6EjLx3xhh3OCau6GrVOvyTOzu7vh2v25s5+o/TnvYqSD6pWp1Lcv92aP4kpzcb5bPDFQH5lum7cUH/4OH+z/zY87LRP9RcGlaDQaK9iZj+aZ2bOscJ2Z5czcVtwiSyeasYHRc1OhtydS/Xlp4apdqVSXXXn66S+jPlW8zTT/wfTibiJnnqs82vnHNLfkbfPW4t9CfarTaZzGmX0/Z/aHS9txzZ84s9cXuzmd6IodNJWjr0+kHk+kvql46ymR6v5E6IcSoe8tPk2UCt1MhH73VcPDmk4w27ZtW1XEzJn5ZO7MzcVfdiheAhbno10ZZx+c/5nO3Dz/GG3z1p3WrqQTTKfV0txqvpudaebO3p47cy9n9iF25n7OzPfyzO7IM5NOO3NBsYOH/vcCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCc/gdZr8huMKLwoAAAAABJRU5ErkJggg==" alt="Hemobras" /><span>Hemobras</span></div>
+      <div class="eyebrow" id="viewerEyebrow">Treinamento</div>
       <h1 id="viewerTitle">Material</h1>
       <p class="reader-lede" id="viewerLede"></p>
     </header>
@@ -504,6 +591,7 @@
   <div class="wrap">
 
     <div class="brand">
+      <div class="mini-brand"><img src="data:image/png;base64,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" alt="Hemobras" /><span>Hemobras</span></div>
       <div class="whoami" id="whoami"></div>
       <div class="eyebrow">Workshop de IA · Verdadeiro ou Falso</div>
       <h1>LLM, RAG &amp; Agentes</h1>
@@ -912,14 +1000,51 @@ nameInput.addEventListener('input', ()=>{
 });
 
 // --- Navegação principal ---
+let quizUnlocked = false;
+
 function startQuiz(){
+  if(!quizUnlocked) return;
   idx = 0; score = 0; results.length = 0;
   progressEl.style.display = 'flex';
   showScreen('quiz');
   renderQuestion();
 }
 
-document.getElementById('pathQuiz').addEventListener('click', startQuiz);
+const pathQuiz = document.getElementById('pathQuiz');
+
+function unlockQuiz(){
+  if(quizUnlocked) return;
+  quizUnlocked = true;
+  pathQuiz.classList.remove('locked');
+  pathQuiz.classList.add('unlocked','pulse');
+  pathQuiz.setAttribute('aria-disabled','false');
+  document.getElementById('lockIc').textContent = '';
+  document.getElementById('quizDesc').textContent =
+    '20 afirmações de verdadeiro ou falso. Cada uma parece certa — descubra qual é a “quase certa”.';
+  document.getElementById('quizCta').innerHTML = 'Começar o quiz <span aria-hidden="true">→</span>';
+  setTimeout(()=>pathQuiz.classList.remove('pulse'), 1200);
+}
+
+// checkbox "treinamento concluído" no submenu
+const doneCheck = document.getElementById('doneCheck');
+const goQuiz = document.getElementById('goQuiz');
+const quizHintTxt = document.getElementById('quizHintTxt');
+
+doneCheck.addEventListener('change', ()=>{
+  if(doneCheck.checked){
+    goQuiz.disabled = false;
+    quizHintTxt.textContent = 'Pronto! Você já pode fazer o questionário.';
+    quizHintTxt.classList.add('ready');
+    unlockQuiz();
+  } else {
+    goQuiz.disabled = true;
+    quizHintTxt.textContent = 'Marque a caixa acima para liberar o questionário.';
+    quizHintTxt.classList.remove('ready');
+  }
+});
+goQuiz.addEventListener('click', ()=>{ if(!goQuiz.disabled) startQuiz(); });
+
+pathQuiz.addEventListener('click', ()=>{ if(quizUnlocked) startQuiz(); });
 document.getElementById('pathTraining').addEventListener('click', ()=>showScreen('training'));
 
 document.getElementById('backToCover').addEventListener('click', ()=>{
