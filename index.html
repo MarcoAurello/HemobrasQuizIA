@@ -180,36 +180,349 @@
 
   .foot{text-align:center;font-size:12px;color:#9a8087;margin-top:22px}
 
+  /* ===================================================================
+     TELAS (capa / menu / quiz) — controle de visibilidade
+     =================================================================== */
+  .screen{display:none}
+  .screen.active{display:block}
+
+  /* body ganha fundo bordô cheio nas telas de capa e menu */
+  body.cover-mode{
+    background:
+      radial-gradient(1100px 700px at 100% -10%, rgba(255,255,255,.06), transparent 60%),
+      radial-gradient(900px 600px at -10% 110%, rgba(0,0,0,.25), transparent 55%),
+      linear-gradient(150deg, var(--bordo-esc) 0%, var(--bordo) 55%, var(--vinho) 100%);
+    align-items:center;
+  }
+
+  /* ---------- Capa (nome) ---------- */
+  .cover{
+    text-align:center;color:#fff;max-width:560px;margin:0 auto;
+    padding:20px 10px;
+  }
+  .cover .badge{
+    width:78px;height:78px;border-radius:50%;margin:0 auto 22px;
+    background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);
+    display:flex;align-items:center;justify-content:center;font-size:34px;
+  }
+  .cover .eyebrow{color:var(--dourado-cl);margin-bottom:12px}
+  .cover h1{
+    font-family:Georgia,'Times New Roman',serif;font-weight:700;
+    font-size:40px;line-height:1.12;margin-bottom:14px;color:#fff;
+  }
+  .cover .lede{
+    font-size:17px;color:var(--rose);max-width:440px;margin:0 auto 34px;line-height:1.5;
+  }
+  .field{max-width:400px;margin:0 auto;text-align:left}
+  .field label{
+    display:block;font-size:12px;font-weight:700;letter-spacing:1.5px;
+    text-transform:uppercase;color:var(--dourado-cl);margin-bottom:8px;
+  }
+  .field input{
+    width:100%;font:inherit;font-size:17px;color:#fff;
+    background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.28);
+    border-radius:12px;padding:14px 16px;transition:border-color .15s,background .15s;
+  }
+  .field input::placeholder{color:rgba(255,255,255,.5)}
+  .field input:focus{outline:none;border-color:var(--dourado-cl);background:rgba(255,255,255,.14)}
+  .field .hint{font-size:12.5px;color:rgba(255,255,255,.55);margin-top:8px;min-height:16px}
+  .field .hint.err{color:#FFD2C9}
+
+  .btn-gold{
+    appearance:none;cursor:pointer;font:inherit;font-weight:700;font-size:16px;
+    color:var(--bordo-esc);background:linear-gradient(135deg,var(--dourado-cl),var(--dourado));
+    border:none;border-radius:12px;padding:15px 30px;margin-top:22px;width:100%;max-width:400px;
+    transition:transform .12s,box-shadow .15s;display:inline-flex;align-items:center;
+    justify-content:center;gap:8px;
+  }
+  .btn-gold:hover{transform:translateY(-2px);box-shadow:0 14px 28px -14px rgba(0,0,0,.5)}
+  .btn-gold:focus-visible{outline:3px solid #fff;outline-offset:2px}
+
+  /* ---------- Menu (dois caminhos) ---------- */
+  .menu{text-align:center;color:#fff;max-width:640px;margin:0 auto;padding:20px 10px}
+  .menu .greet{
+    font-family:Georgia,serif;font-size:32px;margin-bottom:6px;color:#fff;
+  }
+  .menu .greet .nm{color:var(--dourado-cl)}
+  .menu .sub{color:var(--rose);font-size:16px;margin-bottom:36px}
+  .paths{display:grid;grid-template-columns:1fr 1fr;gap:18px;text-align:left}
+  .path{
+    background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.2);
+    border-radius:18px;padding:26px 22px;cursor:pointer;
+    transition:transform .14s,background .15s,border-color .15s,box-shadow .15s;
+    display:flex;flex-direction:column;min-height:210px;
+    color:#fff;text-decoration:none;text-align:left;font:inherit;
+  }
+  .path:hover{transform:translateY(-4px);background:rgba(255,255,255,.12);
+    border-color:var(--dourado-cl);box-shadow:0 18px 36px -20px rgba(0,0,0,.6)}
+  .path:focus-visible{outline:3px solid var(--dourado-cl);outline-offset:3px}
+  .path .pico{
+    width:56px;height:56px;border-radius:14px;display:flex;align-items:center;
+    justify-content:center;font-size:26px;margin-bottom:16px;
+    background:rgba(212,162,74,.22);
+  }
+  .path h3{font-family:Georgia,serif;font-size:21px;margin-bottom:8px;color:#fff}
+  .path p{font-size:13.5px;color:var(--rose);line-height:1.5;flex:1}
+  .path .cta{
+    margin-top:14px;font-size:13px;font-weight:700;color:var(--dourado-cl);
+    letter-spacing:.5px;display:inline-flex;align-items:center;gap:6px;
+  }
+  .menu .back{
+    margin-top:30px;background:none;border:none;color:rgba(255,255,255,.65);
+    font:inherit;font-size:13px;cursor:pointer;text-decoration:underline;
+  }
+  .menu .back:hover{color:#fff}
+
+  /* grid de 2 botões (menu principal) fica centralizado */
+  .paths-2{max-width:640px;margin:0 auto}
+
+  /* nome do participante no topo do quiz */
+  .whoami{
+    font-size:12px;color:#8A7278;margin-bottom:2px;
+  }
+  .whoami b{color:var(--bordo)}
+
+  /* visualizador em iframe (vídeo 16:9 / documentos mais altos) */
+  .viewer-frame{
+    position:relative;width:100%;
+    border-radius:16px;overflow:hidden;background:#000;
+    border:1px solid var(--linha);box-shadow:0 20px 44px -26px rgba(74,14,26,.6);
+    margin-bottom:8px;
+  }
+  .viewer-frame.ratio-video{padding-top:56.25%}      /* 16:9 para vídeo */
+  .viewer-frame.ratio-doc{height:78vh;min-height:520px} /* documentos: altura alta */
+  .viewer-frame iframe{
+    position:absolute;inset:0;width:100%;height:100%;border:0;
+  }
+  .viewer-frame.ratio-doc iframe{position:relative}
+
+  /* ===================================================================
+     TELA · MATERIAL DE TREINAMENTO (leitura interna)
+     =================================================================== */
+  .reader{max-width:760px;margin:0 auto;padding:20px 20px 60px}
+  .reader-top{
+    display:flex;justify-content:space-between;align-items:center;gap:12px;
+    margin-bottom:26px;position:sticky;top:0;z-index:5;
+    background:linear-gradient(var(--papel) 70%, rgba(251,245,246,0));
+    padding:14px 0 10px;
+  }
+  .rtop-back,.rtop-quiz{
+    appearance:none;cursor:pointer;font:inherit;font-weight:700;font-size:13.5px;
+    border-radius:10px;padding:9px 16px;transition:all .15s;
+  }
+  .rtop-back{background:#fff;border:1.5px solid var(--linha);color:var(--bordo)}
+  .rtop-back:hover{border-color:var(--bordo)}
+  .rtop-quiz{background:var(--bordo);border:none;color:#fff}
+  .rtop-quiz:hover{background:var(--vinho)}
+  .rtop-back:focus-visible,.rtop-quiz:focus-visible{outline:3px solid var(--dourado-cl);outline-offset:2px}
+
+  .reader-head{margin-bottom:24px}
+  .reader-head .eyebrow{color:var(--vinho);margin-bottom:8px}
+  .reader-head h1{
+    font-family:Georgia,'Times New Roman',serif;font-size:38px;color:var(--bordo);
+    font-weight:700;line-height:1.1;margin-bottom:14px;
+  }
+  .reader-lede{font-size:16px;color:var(--cinza);line-height:1.6;max-width:660px}
+
+  /* índice */
+  .toc{
+    display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;
+    background:#fff;border:1px solid var(--linha);border-radius:14px;padding:16px;
+  }
+  .toc a{
+    display:flex;align-items:center;gap:10px;text-decoration:none;
+    color:var(--cinza);font-weight:600;font-size:14.5px;padding:8px 10px;
+    border-radius:9px;transition:background .15s,color .15s;
+  }
+  .toc a:hover{background:var(--papel);color:var(--bordo)}
+  .toc .tnum{
+    width:26px;height:26px;border-radius:7px;background:var(--bordo);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex:0 0 auto;
+  }
+
+  /* seções de conteúdo */
+  .rsec{margin-top:34px;scroll-margin-top:78px}
+  .rsec-head{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+  .rsec-head .rn{
+    width:40px;height:40px;border-radius:11px;flex:0 0 auto;
+    background:linear-gradient(135deg,var(--vinho),var(--bordo));color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-family:Georgia,serif;font-size:20px;font-weight:700;
+  }
+  .rsec-head h2{
+    font-family:Georgia,serif;font-size:26px;color:var(--bordo);font-weight:700;
+  }
+  .rsec-head .st{font-size:13px;color:#9a8087;font-weight:600}
+  .rsub{
+    font-size:12px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;
+    color:var(--dourado);margin:24px 0 6px;padding-bottom:6px;
+    border-bottom:1.5px solid var(--linha);
+  }
+  .qa{
+    background:#fff;border:1px solid var(--linha);border-radius:13px;
+    padding:16px 18px;margin-top:12px;
+    transition:box-shadow .15s,border-color .15s;
+  }
+  .qa:hover{border-color:#E3C0C9;box-shadow:0 10px 24px -18px rgba(122,21,51,.5)}
+  .qa .q{
+    display:flex;gap:10px;font-weight:700;color:#3a2c31;font-size:16px;line-height:1.4;
+    margin-bottom:7px;
+  }
+  .qa .q .qi{
+    color:var(--dourado);font-weight:800;flex:0 0 auto;
+  }
+  .qa .a{font-size:14.5px;color:var(--cinza);line-height:1.62}
+  .qa .a b{color:var(--bordo)}
+
+  .reader-foot{
+    margin-top:44px;padding-top:24px;border-top:2px solid var(--linha);text-align:center;
+  }
+  .reader-foot p{font-size:12.5px;color:#9a8087;margin-bottom:16px}
+  .reader-cta{max-width:320px}
+
   @media (max-width:520px){
     .brand h1{font-size:24px}
     .statement{font-size:18px}
     .card{padding:22px 18px}
     .choice{font-size:15px;padding:14px 10px}
+    .cover h1{font-size:30px}
+    .menu .greet{font-size:26px}
+    .paths{grid-template-columns:1fr}
+    .path{min-height:auto}
+    .toc{grid-template-columns:1fr}
+    .reader-head h1{font-size:30px}
+    .reader{padding:16px 16px 50px}
   }
   @media (prefers-reduced-motion:reduce){
     *{transition:none!important}
   }
 </style>
 </head>
-<body>
-<div class="wrap">
+<body class="cover-mode">
 
-  <div class="brand">
-    <div class="eyebrow">Workshop de IA · Verdadeiro ou Falso</div>
-    <h1>LLM, RAG &amp; Agentes</h1>
-    <div class="sig">Cada afirmação parece correta. Uma é <b>verdadeira</b>; a outra é <b>quase certa</b> — plausível, mas errada. Decida.</div>
+<!-- ================= TELA 1 · CAPA (NOME) ================= -->
+<section class="screen active" id="screen-cover">
+  <div class="cover">
+    <div class="badge">🧠</div>
+    <div class="eyebrow">Treinamento Hemobras</div>
+    <h1>Treinamento<br>Conceitos de IA</h1>
+    <p class="lede">LLM, RAG e Agentes — do conceito à oportunidade. Comece digitando seu nome.</p>
+    <div class="field">
+      <label for="nameInput">Seu nome</label>
+      <input id="nameInput" type="text" autocomplete="name" maxlength="40"
+             placeholder="Digite seu nome para começar" />
+      <div class="hint" id="nameHint">Usaremos apenas para personalizar sua experiência.</div>
+    </div>
+    <button class="btn-gold" id="enterBtn">Entrar <span aria-hidden="true">→</span></button>
   </div>
+</section>
 
-  <div class="progress" id="progress">
-    <span class="count" id="count">1 / 20</span>
-    <div class="bar"><i id="barfill"></i></div>
-    <span class="score-chip" id="scorechip">0 acertos</span>
+<!-- ================= TELA 2 · MENU PRINCIPAL (2 CAMINHOS) ================= -->
+<section class="screen" id="screen-menu">
+  <div class="menu">
+    <div class="greet">Olá, <span class="nm" id="greetName">participante</span> 👋</div>
+    <div class="sub">Por onde você quer começar?</div>
+
+    <div class="paths paths-2">
+      <button class="path" id="pathTraining" type="button">
+        <div class="pico">🎓</div>
+        <h3>Fazer treinamento</h3>
+        <p>Assista ao vídeo, veja a apresentação e leia a lista de perguntas — tudo dentro da aplicação.</p>
+        <span class="cta">Abrir treinamento <span aria-hidden="true">→</span></span>
+      </button>
+
+      <button class="path" id="pathQuiz" type="button">
+        <div class="pico">✏️</div>
+        <h3>Fazer o quiz</h3>
+        <p>20 afirmações de verdadeiro ou falso. Cada uma parece certa — descubra qual é a “quase certa”.</p>
+        <span class="cta">Começar o quiz <span aria-hidden="true">→</span></span>
+      </button>
+    </div>
+    <button class="back" id="backToCover">← Trocar de nome</button>
   </div>
+</section>
 
-  <div id="app"></div>
+<!-- ================= TELA 2b · SUBMENU DE TREINAMENTO (3 CAMINHOS) ================= -->
+<section class="screen" id="screen-training">
+  <div class="menu">
+    <div class="greet">Materiais de treinamento</div>
+    <div class="sub">Escolha um dos três — todos abrem aqui na aplicação.</div>
 
-  <div class="foot">Material de apoio · Marco Aurélio — Analista · GTIC · Hemobras</div>
-</div>
+    <div class="paths">
+      <button class="path" id="tVideo" type="button">
+        <div class="pico">▶️</div>
+        <h3>Vídeo</h3>
+        <p>A aula-base sobre LLM, RAG e Agentes, direto do YouTube.</p>
+        <span class="cta">Assistir <span aria-hidden="true">→</span></span>
+      </button>
+
+      <button class="path" id="tApres" type="button">
+        <div class="pico">📊</div>
+        <h3>Apresentação</h3>
+        <p>Os slides do workshop, com conceitos e oportunidades de IA.</p>
+        <span class="cta">Abrir slides <span aria-hidden="true">→</span></span>
+      </button>
+
+      <button class="path" id="tFaq" type="button">
+        <div class="pico">📖</div>
+        <h3>Lista de perguntas</h3>
+        <p>O material de apoio com perguntas e respostas, das mais comuns às mais difíceis.</p>
+        <span class="cta">Abrir a lista <span aria-hidden="true">→</span></span>
+      </button>
+    </div>
+    <button class="back" id="trainingBack">← Voltar ao início</button>
+  </div>
+</section>
+
+<!-- ================= TELA · VISUALIZADOR (iframe: vídeo / slides / faq) ================= -->
+<section class="screen" id="screen-viewer">
+  <div class="reader">
+    <div class="reader-top">
+      <button class="rtop-back" id="viewerBack">← Voltar aos materiais</button>
+      <a class="rtop-quiz" id="viewerNewTab" href="#" target="_blank" rel="noopener">Abrir em nova aba ↗</a>
+    </div>
+
+    <header class="reader-head">
+      <div class="eyebrow" id="viewerEyebrow">Treinamento Hemobras</div>
+      <h1 id="viewerTitle">Material</h1>
+      <p class="reader-lede" id="viewerLede"></p>
+    </header>
+
+    <div class="viewer-frame" id="viewerFrame">
+      <!-- iframe injetado via JS -->
+    </div>
+
+    <div class="reader-foot">
+      <p>Treinamento Hemobras · Marco Aurélio — Analista · GTIC · Hemobras</p>
+      <button class="btn-gold reader-cta" id="viewerToMaterials">Voltar aos materiais →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TELA 3 · QUIZ ================= -->
+<section class="screen" id="screen-quiz">
+  <div class="wrap">
+
+    <div class="brand">
+      <div class="whoami" id="whoami"></div>
+      <div class="eyebrow">Workshop de IA · Verdadeiro ou Falso</div>
+      <h1>LLM, RAG &amp; Agentes</h1>
+      <div class="sig">Cada afirmação parece correta. Uma é <b>verdadeira</b>; a outra é <b>quase certa</b> — plausível, mas errada. Decida.</div>
+    </div>
+
+    <div class="progress" id="progress">
+      <span class="count" id="count">1 / 20</span>
+      <div class="bar"><i id="barfill"></i></div>
+      <span class="score-chip" id="scorechip">0 acertos</span>
+    </div>
+
+    <div id="app"></div>
+
+    <button class="back" id="backToMenu" style="color:#9a8087;background:none;border:none;font:inherit;font-size:13px;cursor:pointer;text-decoration:underline;margin-top:18px;display:block">← Voltar ao menu</button>
+
+    <div class="foot">Material de apoio · Marco Aurélio — Analista · GTIC · Hemobras</div>
+  </div>
+</section>
 
 <script>
 /* ==========================================================
@@ -542,8 +855,141 @@ function renderResult(){
   });
 }
 
-/* start */
-renderQuestion();
+/* ==========================================================
+   CONTROLE DE TELAS (capa -> menu -> quiz)
+   ========================================================== */
+let participantName = "";
+
+const screens = {
+  cover:    document.getElementById('screen-cover'),
+  menu:     document.getElementById('screen-menu'),
+  training: document.getElementById('screen-training'),
+  viewer:   document.getElementById('screen-viewer'),
+  quiz:     document.getElementById('screen-quiz'),
+};
+
+function showScreen(name){
+  Object.values(screens).forEach(s=>s.classList.remove('active'));
+  screens[name].classList.add('active');
+  // fundo bordô cheio na capa, no menu e no submenu de treinamento; papel claro no visualizador e no quiz
+  document.body.classList.toggle('cover-mode', name === 'cover' || name === 'menu' || name === 'training');
+  // ao sair do visualizador, esvazia o iframe (pausa vídeo / descarrega documento)
+  if(name !== 'viewer'){
+    const vf = document.getElementById('viewerFrame');
+    if(vf) vf.innerHTML = '';
+  }
+  window.scrollTo(0,0);
+}
+
+// --- Capa: capturar nome e entrar ---
+const nameInput = document.getElementById('nameInput');
+const nameHint  = document.getElementById('nameHint');
+
+function enter(){
+  const val = nameInput.value.trim();
+  if(val.length < 2){
+    nameHint.textContent = "Por favor, digite seu nome para continuar.";
+    nameHint.classList.add('err');
+    nameInput.focus();
+    return;
+  }
+  participantName = val;
+  // primeiro nome, com inicial maiúscula
+  const first = val.split(/\s+/)[0];
+  const nice = first.charAt(0).toUpperCase() + first.slice(1);
+  document.getElementById('greetName').textContent = nice;
+  document.getElementById('whoami').innerHTML = 'Participante: <b>'+val.replace(/</g,'&lt;')+'</b>';
+  showScreen('menu');
+}
+
+document.getElementById('enterBtn').addEventListener('click', enter);
+nameInput.addEventListener('keydown', e=>{
+  if(e.key === 'Enter') enter();
+});
+nameInput.addEventListener('input', ()=>{
+  nameHint.textContent = "Usaremos apenas para personalizar sua experiência.";
+  nameHint.classList.remove('err');
+});
+
+// --- Navegação principal ---
+function startQuiz(){
+  idx = 0; score = 0; results.length = 0;
+  progressEl.style.display = 'flex';
+  showScreen('quiz');
+  renderQuestion();
+}
+
+document.getElementById('pathQuiz').addEventListener('click', startQuiz);
+document.getElementById('pathTraining').addEventListener('click', ()=>showScreen('training'));
+
+document.getElementById('backToCover').addEventListener('click', ()=>{
+  showScreen('cover');
+  nameInput.focus();
+});
+document.getElementById('backToMenu').addEventListener('click', ()=>showScreen('menu'));
+
+// --- Submenu de treinamento ---
+document.getElementById('trainingBack').addEventListener('click', ()=>showScreen('menu'));
+
+// Configuração dos três materiais (todos abrem em iframe interno)
+const MATERIALS = {
+  video: {
+    eyebrow: "Treinamento Hemobras · Vídeo",
+    title:   "Vídeo do treinamento",
+    lede:    "A aula-base sobre LLM, RAG e Agentes. Use o botão de tela cheia do player, se preferir.",
+    embed:   "https://www.youtube.com/embed/AsnD0tOwNRU?rel=0",
+    newtab:  "https://www.youtube.com/watch?v=AsnD0tOwNRU",
+    ratio:   "ratio-video",
+    allow:   "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share",
+  },
+  apres: {
+    eyebrow: "Treinamento Hemobras · Apresentação",
+    title:   "Apresentação",
+    lede:    "Os slides do workshop, com os conceitos e as oportunidades de IA na indústria farmacêutica.",
+    embed:   "https://docs.google.com/presentation/d/1vQW6HaJuJz0d73SYpGrBGKbyACx9oQiK/preview",
+    newtab:  "https://docs.google.com/presentation/d/1vQW6HaJuJz0d73SYpGrBGKbyACx9oQiK/edit?usp=drive_link&ouid=113082320364882655321&rtpof=true&sd=true",
+    ratio:   "ratio-doc",
+    allow:   "autoplay",
+  },
+  faq: {
+    eyebrow: "Treinamento Hemobras · Material de apoio",
+    title:   "Lista de perguntas",
+    lede:    "Perguntas e respostas sobre LLM, RAG e Agentes, das mais comuns às mais difíceis.",
+    embed:   "https://drive.google.com/file/d/1QIMj0fhYeeIjKylcUMHo7I5bo-TgWKZX/preview",
+    newtab:  "https://drive.google.com/file/d/1QIMj0fhYeeIjKylcUMHo7I5bo-TgWKZX/view?usp=drive_link",
+    ratio:   "ratio-doc",
+    allow:   "",
+  },
+};
+
+function openMaterial(key){
+  const m = MATERIALS[key];
+  if(!m) return;
+  document.getElementById('viewerEyebrow').textContent = m.eyebrow;
+  document.getElementById('viewerTitle').textContent = m.title;
+  document.getElementById('viewerLede').textContent = m.lede;
+  document.getElementById('viewerNewTab').href = m.newtab;
+
+  const frame = document.getElementById('viewerFrame');
+  frame.className = 'viewer-frame ' + m.ratio;
+  frame.innerHTML = '<iframe src="'+m.embed+'" title="'+m.title+'"'
+    + ' frameborder="0"'
+    + (m.allow ? ' allow="'+m.allow+'"' : '')
+    + ' allowfullscreen></iframe>';
+
+  showScreen('viewer');
+}
+
+document.getElementById('tVideo').addEventListener('click', ()=>openMaterial('video'));
+document.getElementById('tApres').addEventListener('click', ()=>openMaterial('apres'));
+document.getElementById('tFaq').addEventListener('click', ()=>openMaterial('faq'));
+
+// --- Visualizador: voltar ao submenu de treinamento ---
+document.getElementById('viewerBack').addEventListener('click', ()=>showScreen('training'));
+document.getElementById('viewerToMaterials').addEventListener('click', ()=>showScreen('training'));
+
+/* start: foca no campo de nome */
+nameInput.focus();
 </script>
 </body>
 </html>
