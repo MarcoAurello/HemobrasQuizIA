@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Quiz — LLM, RAG e Agentes de IA</title>
+<title>Treinamento — LLM, RAG e Agentes de IA</title>
 <style>
   :root{
     --bordo:#7A1533;
@@ -51,158 +51,10 @@
   .brand .sig{font-size:13px;color:#8A7278;margin-top:6px}
   .brand .sig b{color:var(--bordo)}
 
-  /* ---------- Barra de progresso ---------- */
-  .progress{
-    display:flex;align-items:center;gap:12px;margin:18px 0 14px;
-  }
-  .bar{flex:1;height:8px;background:var(--linha);border-radius:99px;overflow:hidden}
-  .bar>i{
-    display:block;height:100%;width:0%;border-radius:99px;
-    background:linear-gradient(90deg,var(--vinho),var(--dourado-cl));
-    transition:width .45s cubic-bezier(.4,0,.2,1);
-  }
-  .count{font-size:13px;font-weight:700;color:var(--bordo);white-space:nowrap}
-  .score-chip{
-    font-size:13px;font-weight:700;color:var(--dourado);
-    background:#fff;border:1px solid var(--linha);border-radius:99px;
-    padding:3px 11px;white-space:nowrap;
-  }
 
-  /* ---------- Card ---------- */
-  .card{
-    background:#fff;border:1px solid var(--linha);border-radius:18px;
-    box-shadow:0 18px 40px -24px rgba(74,14,26,.45);
-    padding:28px 26px 26px;
-  }
-  .tag{
-    display:inline-block;font-size:11px;font-weight:700;letter-spacing:1.5px;
-    text-transform:uppercase;color:#fff;background:var(--bordo);
-    padding:4px 11px;border-radius:99px;margin-bottom:16px;
-  }
-  .tag.rag{background:var(--vinho)}
-  .tag.agente{background:var(--dourado)}
-  .tag.transversal{background:#6b4a52}
-
-  .prompt-label{
-    font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
-    color:#8A7278;margin-bottom:8px;
-  }
-  .statement{
-    font-size:20px;line-height:1.45;color:#3a2c31;font-weight:600;
-    margin-bottom:22px;
-  }
-  .statement .q{font-family:'Segoe UI',system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif}
-
-  /* ---------- Botões V/F ---------- */
-  .choices{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .choice{
-    appearance:none;cursor:pointer;font:inherit;
-    border:2px solid var(--linha);background:#fff;color:var(--cinza);
-    border-radius:14px;padding:16px 14px;text-align:center;
-    font-weight:700;font-size:16px;
-    transition:transform .12s ease,border-color .15s,background .15s,box-shadow .15s;
-    display:flex;flex-direction:column;align-items:center;gap:4px;
-  }
-  .choice .ic{font-size:22px;line-height:1}
-  .choice .sub{font-size:11px;font-weight:600;letter-spacing:.3px;color:#9a8087;text-transform:uppercase}
-  .choice:hover:not(:disabled){border-color:var(--vinho);transform:translateY(-2px);box-shadow:0 10px 20px -14px rgba(122,21,51,.5)}
-  .choice:focus-visible{outline:3px solid var(--dourado-cl);outline-offset:2px}
-  .choice.true.picked,.choice.false.picked{border-width:2px}
-  .choice:disabled{cursor:default}
-  .choice.correct{border-color:var(--verde);background:var(--verde-bg);color:var(--verde)}
-  .choice.correct .sub{color:var(--verde)}
-  .choice.wrong{border-color:var(--erro);background:var(--erro-bg);color:var(--erro)}
-  .choice.wrong .sub{color:var(--erro)}
-  .choice.faded{opacity:.5}
-
-  /* ---------- Explicação ---------- */
-  .explain{
-    margin-top:20px;border-radius:14px;padding:16px 16px 16px 18px;
-    border-left:5px solid var(--dourado);background:#FBF3E4;
-    font-size:15px;line-height:1.55;
-    max-height:0;opacity:0;overflow:hidden;padding-top:0;padding-bottom:0;
-    transition:max-height .45s ease,opacity .35s ease,padding .35s ease;
-  }
-  .explain.show{max-height:420px;opacity:1;padding-top:16px;padding-bottom:16px}
-  .explain .verdict{font-weight:800;display:block;margin-bottom:6px;font-size:15px}
-  .explain.ok{border-left-color:var(--verde);background:var(--verde-bg)}
-  .explain.ok .verdict{color:var(--verde)}
-  .explain.no{border-left-color:var(--erro);background:var(--erro-bg)}
-  .explain.no .verdict{color:var(--erro)}
-  .explain p{color:#4a3a40}
-  .explain .why{margin-top:8px;font-size:13.5px;color:#6b565d}
-  .explain .why b{color:var(--bordo)}
-
-  /* ---------- Rodapé de navegação ---------- */
-  .nav{display:flex;justify-content:flex-end;margin-top:20px;min-height:48px;align-items:center}
-  .next{
-    appearance:none;cursor:pointer;font:inherit;font-weight:700;font-size:15px;
-    color:#fff;background:var(--bordo);border:none;border-radius:12px;
-    padding:13px 26px;transition:background .15s,transform .12s,opacity .2s;
-    display:inline-flex;align-items:center;gap:8px;
-  }
-  .next:hover{background:var(--vinho);transform:translateY(-1px)}
-  .next:focus-visible{outline:3px solid var(--dourado-cl);outline-offset:2px}
-  .next[hidden]{display:none}
-
-  /* ---------- Tela de resultado ---------- */
-  .result{text-align:center;padding:34px 26px 30px}
-  .result .ring{
-    width:150px;height:150px;margin:6px auto 18px;position:relative;
-  }
-  .result .ring svg{transform:rotate(-90deg)}
-  .result .ring .pct{
-    position:absolute;inset:0;display:flex;flex-direction:column;
-    align-items:center;justify-content:center;
-  }
-  .result .ring .pct b{font-size:38px;color:var(--bordo);font-family:'Segoe UI',system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;line-height:1}
-  .result .ring .pct span{font-size:12px;color:#8A7278;font-weight:700;letter-spacing:1px;margin-top:2px}
-  .result h2{font-family:'Segoe UI',system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;color:var(--bordo);font-size:26px;margin-bottom:8px}
-  .result .tier{font-weight:700;color:var(--dourado);font-size:15px;margin-bottom:14px;letter-spacing:.3px}
-  .result p.msg{font-size:15px;color:#4a3a40;max-width:460px;margin:0 auto 22px}
-  .result .tally{
-    display:flex;gap:14px;justify-content:center;margin-bottom:24px;flex-wrap:wrap;
-  }
-  .result .tally div{
-    background:#fff;border:1px solid var(--linha);border-radius:12px;
-    padding:12px 18px;min-width:96px;
-  }
-  .result .tally .n{font-size:26px;font-weight:800;font-family:'Segoe UI',system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;line-height:1}
-  .result .tally .l{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:#8A7278;margin-top:4px;font-weight:700}
-  .result .tally .hit .n{color:var(--verde)}
-  .result .tally .miss .n{color:var(--erro)}
-  .result .restart{
-    appearance:none;cursor:pointer;font:inherit;font-weight:700;font-size:15px;
-    color:var(--bordo);background:#fff;border:2px solid var(--bordo);border-radius:12px;
-    padding:12px 26px;transition:background .15s,color .15s;
-  }
-  .result .restart:hover{background:var(--bordo);color:#fff}
-
-  /* bloco de aprovação (score > 15) */
-  .approval{
-    margin:6px auto 22px;max-width:520px;
-    background:linear-gradient(150deg, #FBF3E4, #F7ECEF);
-    border:1.5px solid var(--dourado-cl);border-radius:16px;
-    padding:22px 22px 24px;
-    box-shadow:0 16px 34px -22px rgba(184,134,43,.6);
-    animation:approvalIn .5s cubic-bezier(.2,.8,.2,1) both;
-  }
-  @keyframes approvalIn{
-    0%{opacity:0;transform:translateY(12px) scale(.97)}
-    100%{opacity:1;transform:none}
-  }
-  .approval-badge{
-    font-family:'Segoe UI',system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;font-size:22px;font-weight:800;color:var(--bordo);
-    margin-bottom:10px;
-  }
-  .approval-msg{
-    font-size:15px;color:#4a3a40;line-height:1.6;margin-bottom:18px;
-  }
-  .approval-msg b{color:var(--bordo)}
-  .approval-cta{
-    display:inline-flex;align-items:center;justify-content:center;gap:8px;
-    width:100%;max-width:100%;margin-top:0;text-decoration:none;
-  }
+  /* ---------- Formulário final (Google Forms) ---------- */
+  .form-embed{max-width:660px;margin:0 auto}
+  .form-embed iframe{display:block;width:100%;max-width:640px;height:1632px;border:0;margin:0 auto}
 
   .foot{text-align:center;font-size:12px;color:#9a8087;margin-top:22px}
 
@@ -595,7 +447,7 @@
       <span>Hemobrás</span>
     </div>
     <div class="greet">Olá, <span class="nm" id="greetName">participante</span> 👋</div>
-    <div class="sub">Aprenda os conceitos de IA, responda o questionário e apresente sua idéia.</div>
+    <div class="sub">Aprenda os conceitos de IA e apresente sua ideia.</div>
 
     <div class="paths paths-2">
       <button class="path" id="pathTraining" type="button">
@@ -607,8 +459,8 @@
 
       <button class="path locked" id="pathQuiz" type="button" aria-disabled="true">
         <div class="pico">✏️</div>
-        <h3>Questionário <span class="lock-ic" id="lockIc">🔒</span></h3>
-        <p id="quizDesc">Conclua o treinamento primeiro. Marque “treinamento concluído” dentro de <b>Fazer treinamento</b> para liberar o questionário. Acerte 15/20 e libere o formulário para sugerir sua proposta de IA</p>
+        <h3>Formulário final <span class="lock-ic" id="lockIc">🔒</span></h3>
+        <p id="quizDesc">Conclua o treinamento primeiro. Marque “treinamento concluído” dentro de <b>Fazer treinamento</b> para liberar o formulário e sugerir sua proposta de IA.</p>
         <span class="cta" id="quizCta">Bloqueado</span>
       </button>
     </div>
@@ -653,10 +505,10 @@
       <label class="check-line">
         <input type="checkbox" id="doneCheck" />
         <span class="checkmark" aria-hidden="true"></span>
-        <span class="check-text">Faça o treinamento e responda o questionário, se acertar 15 perguntas poderá sugerir uma ferramenta de IA..</span>
+        <span class="check-text">Concluí o treinamento e quero preencher o formulário final.</span>
       </label>
-      <button class="btn-gold quiz-go" id="goQuiz" disabled>Fazer o questionário →</button>
-      <p class="quiz-hint" id="quizHintTxt">Marque a caixa acima para liberar o questionário.</p>
+      <button class="btn-gold quiz-go" id="goQuiz" disabled>Abrir o formulário →</button>
+      <p class="quiz-hint" id="quizHintTxt">Marque a caixa acima para liberar o formulário.</p>
     </div>
 
     <button class="back" id="trainingBack">← Voltar ao início</button>
@@ -763,18 +615,14 @@
     <div class="brand">
       <div class="mini-brand"><img src="data:image/png;base64,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" alt="Hemobrás" /><span>Hemobrás</span></div>
       <div class="whoami" id="whoami"></div>
-      <div class="eyebrow">Workshop de IA · Verdadeiro ou Falso</div>
-      <h1>LLM, RAG &amp; Agentes</h1>
-      <div class="sig">Cada afirmação parece correta. Uma é <b>verdadeira</b>; a outra é <b>quase certa</b> — plausível, mas errada. Decida.</div>
+      <div class="eyebrow">Treinamento Hemobrás · Formulário final</div>
+      <h1>Sugira sua ideia de IA</h1>
+      <div class="sig">Preencha o formulário abaixo para concluir o treinamento e sugerir sua proposta de uso de <b>LLM</b>, <b>RAG</b> ou <b>Agentes</b> na Hemobrás.</div>
     </div>
 
-    <div class="progress" id="progress">
-      <span class="count" id="count">1 / 20</span>
-      <div class="bar"><i id="barfill"></i></div>
-      <span class="score-chip" id="scorechip">0 acertos</span>
+    <div class="form-embed">
+      <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSepoSFj89B48Sg12n0D83Eo8TGfh_bDJ7DyiX3hLTCwdiizQQ/viewform?embedded=true" title="Formulário de sugestão de IA" frameborder="0" marginheight="0" marginwidth="0">Carregando…</iframe>
     </div>
-
-    <div id="app"></div>
 
     <button class="back" id="backToMenu" style="color:#9a8087;background:none;border:none;font:inherit;font-size:13px;cursor:pointer;text-decoration:underline;margin-top:18px;display:block">← Voltar ao menu</button>
 
@@ -785,346 +633,6 @@
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
 <script>
-/* ==========================================================
-   BANCO DE PERGUNTAS
-   answer: true  -> a afirmação é VERDADEIRA
-   answer: false -> a afirmação é FALSA (a "quase certa")
-   ========================================================== */
-const QUESTIONS = [
-  {
-    cat:"LLM", tag:"tag",
-    statement:"Um LLM não “sabe” fatos: ele calcula qual é a continuação de texto mais provável a partir do que aprendeu.",
-    answer:true,
-    explainTrue:"Exato. O modelo prevê a sequência mais provável de palavras. A fluência dá impressão de conhecimento, mas por baixo é estatística de linguagem — por isso ele pode soar seguro mesmo quando erra.",
-    explainFalse:"Parece razoável dizer que ele “consulta uma base de fatos”, mas não é assim que um LLM funciona por padrão."
-  },
-  {
-    cat:"LLM", tag:"tag",
-    statement:"Quando um LLM inventa uma informação que soa convincente mas é falsa, isso é chamado de “cache corrompido”.",
-    answer:false,
-    explainTrue:"",
-    explainFalse:"Quase certo no espírito, errado no termo. O fenômeno existe e é real, mas o nome correto é “alucinação”, não “cache corrompido”. Ele ocorre porque o modelo preenche lacunas com o que parece plausível."
-  },
-  {
-    cat:"LLM", tag:"tag",
-    statement:"Um LLM “puro”, sem integração, já conhece os POPs e registros internos da Hemobrás se você citar o nome da empresa.",
-    answer:false,
-    explainTrue:"",
-    explainFalse:"Tentador, mas falso. O modelo só sabe o que estava nos textos públicos do treinamento. Ele nunca leu nossos documentos internos — citar o nome da empresa não muda isso. Para responder sobre eles, é preciso entregar os documentos (RAG)."
-  },
-  {
-    cat:"RAG", tag:"rag",
-    statement:"No RAG, o sistema primeiro busca trechos relevantes nos seus documentos e só então o LLM redige a resposta com base neles.",
-    answer:true,
-    explainTrue:"Isso mesmo. “Busca, depois gera.” O RAG recupera os trechos certos dos nossos arquivos e os entrega ao modelo como contexto — a resposta passa a vir dos nossos documentos, e pode citar a fonte.",
-    explainFalse:"É a ordem correta do RAG: recuperação primeiro, geração depois."
-  },
-  {
-    cat:"RAG", tag:"rag",
-    statement:"A grande vantagem do RAG é que, ao atualizar um POP, é preciso re-treinar o modelo para que a resposta mude.",
-    answer:false,
-    explainTrue:"",
-    explainFalse:"Quase certo, mas invertido. A vantagem é justamente o contrário: você NÃO re-treina nada. Atualizou o documento, a resposta passa a refletir a versão nova na próxima consulta. O conhecimento fica vivo sem re-treino."
-  },
-  {
-    cat:"RAG", tag:"rag",
-    statement:"O RAG reduz bastante as alucinações, mas não as elimina: se a busca trouxer o trecho errado, a resposta ainda pode sair imprecisa.",
-    answer:true,
-    explainTrue:"Correto. Prender a resposta aos documentos corta boa parte das invenções, porém a qualidade depende da qualidade da busca. Por isso a citação da fonte é essencial: ela permite conferir cada resposta.",
-    explainFalse:"É uma leitura madura e correta do RAG — ele mitiga, não zera o risco."
-  },
-  {
-    cat:"RAG", tag:"rag",
-    statement:"Um RAG é essencialmente igual a um buscador do SharePoint: os dois devolvem uma lista de documentos para você ler.",
-    answer:false,
-    explainTrue:"",
-    explainFalse:"Chega perto, mas confunde as coisas. Um buscador devolve uma lista para você ler; o RAG lê os documentos por você e entrega uma resposta redigida, com a fonte. É “aqui estão 40 POPs” versus “a especificação é X, conforme o POP 123, seção 4”."
-  },
-  {
-    cat:"Agentes", tag:"agente",
-    statement:"O que diferencia um agente de um chat comum é que o agente planeja passos, usa ferramentas e executa a tarefa até concluir.",
-    answer:true,
-    explainTrue:"Isso. O chat responde e para; o agente encadeia passos sozinho — busca, analisa, escreve, salva. Sai do “responder” para o “fazer”, sempre dentro dos limites e aprovações que você definir.",
-    explainFalse:"É exatamente a distinção central: agentes agem em vários passos, o chat apenas responde."
-  },
-  {
-    cat:"Agentes", tag:"agente",
-    statement:"Como o agente age sozinho, a responsabilidade legal por um erro passa a ser da própria IA, e não da organização.",
-    answer:false,
-    explainTrue:"",
-    explainFalse:"Soa lógico, mas é falso — e perigoso. A IA não assume responsabilidade legal. A responsabilidade continua da organização e das pessoas que supervisionam. Por isso mantém-se um humano responsável no circuito em qualquer passo que afete qualidade ou dados regulados."
-  },
-  {
-    cat:"Agentes", tag:"agente",
-    statement:"A autonomia de um agente é ajustável, como um botão de volume: pode ir de “só sugere” até “executa dentro de limites”.",
-    answer:true,
-    explainTrue:"Correto. Autonomia é um dial, não um interruptor. Em ambiente regulado, começa-se com o humano aprovando cada passo crítico e só se amplia conforme a confiança e as evidências crescem.",
-    explainFalse:"É a metáfora certa: autonomia é gradual e configurável, não tudo-ou-nada."
-  },
-  {
-    cat:"Transversal", tag:"transversal",
-    statement:"O jeito mais seguro de começar é por um caso textual, repetitivo, com documentos organizados e sem decisão crítica.",
-    answer:true,
-    explainTrue:"Isso mesmo. Menor risco, maior dor: por exemplo, consulta assistida a POPs com o humano conferindo. Piloto pequeno, métrica clara, e só ampliar se der resultado.",
-    explainFalse:"É a recomendação central: começar pequeno, no caso de menor risco e dor real."
-  },
-  {
-    cat:"Transversal", tag:"transversal",
-    statement:"Por serem dados comuns, informações de doadores e pacientes podem ir para qualquer ferramenta de IA gratuita sem restrição.",
-    answer:false,
-    explainTrue:"",
-    explainFalse:"Falso, e é um ponto crítico. Dado de saúde é dado sensível sob a LGPD. Só deve trafegar em ferramentas homologadas, com dados minimizados ou anonimizados e infraestrutura controlada — com o DPO e a segurança envolvidos desde o início."
-  },
-  {
-    cat:"LLM", tag:"tag",
-    statement:"Para usar bem um LLM não é preciso programar; o que mais influencia a qualidade da resposta é como você formula o pedido (o prompt).",
-    answer:true,
-    explainTrue:"Correto. Você conversa em português normal. A habilidade que importa é pedir bem — dar contexto, papel, formato e foco. Um pedido preciso rende uma resposta útil; um pedido vago rende algo genérico.",
-    explainFalse:"É verdade: a competência-chave é saber pedir, não saber programar."
-  },
-  {
-    cat:"LLM", tag:"tag",
-    statement:"A “janela de contexto” é o limite de tempo que o LLM leva para responder antes de expirar a sessão.",
-    answer:false,
-    explainTrue:"",
-    explainFalse:"Quase convincente, mas errado. Janela de contexto é o quanto de texto o modelo consegue considerar de uma vez — a pergunta mais os documentos anexados. Não tem a ver com tempo; se um dossiê é maior que a janela, ele não “enxerga” tudo de uma vez."
-  },
-  {
-    cat:"LLM", tag:"tag",
-    statement:"LLMs podem reproduzir vieses presentes nos dados de treinamento, o que exige supervisão humana em decisões que afetem pessoas.",
-    answer:true,
-    explainTrue:"Isso mesmo. Como aprendem de textos humanos, podem herdar vieses. Em triagem ou priorização que afete pessoas, isso é risco real e pede supervisão, testes e documentação — IA como apoio, nunca como decisor autônomo.",
-    explainFalse:"É uma preocupação legítima e correta: viés existe e exige controle humano."
-  },
-  {
-    cat:"RAG", tag:"rag",
-    statement:"Um RAG bem construído respeita automaticamente as permissões de acesso, sem que isso precise ser desenhado no projeto.",
-    answer:false,
-    explainTrue:"",
-    explainFalse:"Parece razoável, mas é falso. Respeitar permissões — cada usuário só recebe respostas dos documentos que já pode acessar — precisa ser desenhado explicitamente. Não é automático, e é um requisito essencial quando há dados restritos."
-  },
-  {
-    cat:"RAG", tag:"rag",
-    statement:"Os documentos que alimentam um RAG podem permanecer na infraestrutura da Hemobrás, sem precisar sair para a nuvem de um fornecedor.",
-    answer:true,
-    explainTrue:"Correto. O RAG pode ser montado em infraestrutura controlada, com os documentos ficando nos nossos repositórios. É possível até usar modelos hospedados internamente quando a sensibilidade do dado exige.",
-    explainFalse:"É verdade: manter os documentos internos é uma opção real de arquitetura do RAG."
-  },
-  {
-    cat:"Agentes", tag:"agente",
-    statement:"Como um agente decide sozinho o caminho diante de situações não roteirizadas, ele deve sempre substituir automações simples do tipo “se A, faça B”.",
-    answer:false,
-    explainTrue:"",
-    explainFalse:"Meio verdade, meio armadilha. O agente brilha onde há variação e julgamento textual, mas onde as regras já são claras e fixas, uma automação simples (RPA/script) é mais previsível e barata. Agente não substitui automação boa — complementa."
-  },
-  {
-    cat:"Transversal", tag:"transversal",
-    statement:"Para saber se uma solução de IA compensa, basta adotá-la; o retorno aparece naturalmente com o tempo, sem precisar medir.",
-    answer:false,
-    explainTrue:"",
-    explainFalse:"Falso. O ganho só se prova medindo: escolha uma métrica antes (horas economizadas, erros evitados, tempo de resposta), rode um piloto e compare. Alguns casos economizam muito; outros não valem a pena — a disciplina de medir separa investimento de desperdício."
-  },
-  {
-    cat:"Agentes", tag:"agente",
-    statement:"Numa cadeia de vários passos, um erro pequeno no início pode se propagar, por isso usam-se verificações e aprovações humanas entre as etapas.",
-    answer:true,
-    explainTrue:"Correto. O acúmulo de erro é um risco real do encadeamento. Mitiga-se com checagens entre etapas, pontos de aprovação humana e escopo estreito — quanto mais longa e autônoma a cadeia, mais pontos de controle ela exige.",
-    explainFalse:"É uma leitura correta: cadeias longas acumulam erro e pedem pontos de controle."
-  }
-];
-
-/* ==========================================================
-   ESTADO E RENDERIZAÇÃO
-   ========================================================== */
-const app = document.getElementById('app');
-const barfill = document.getElementById('barfill');
-const countEl = document.getElementById('count');
-const scoreChip = document.getElementById('scorechip');
-const progressEl = document.getElementById('progress');
-
-let idx = 0;
-let score = 0;
-let answered = false;
-const results = []; // true = acerto
-
-function updateProgress(){
-  const pct = (idx / QUESTIONS.length) * 100;
-  barfill.style.width = pct + '%';
-  countEl.textContent = (idx+1) + ' / ' + QUESTIONS.length;
-  scoreChip.textContent = score + (score === 1 ? ' acerto' : ' acertos');
-}
-
-function renderQuestion(){
-  answered = false;
-  const q = QUESTIONS[idx];
-  updateProgress();
-
-  app.innerHTML = `
-    <div class="card">
-      <span class="tag ${q.tag}">${q.cat}</span>
-      <div class="prompt-label">Esta afirmação é…</div>
-      <div class="statement"><span class="q">${q.statement}</span></div>
-      <div class="choices">
-        <button class="choice true" data-val="true">
-          <span class="ic">✓</span>Verdadeiro
-          <span class="sub">Está correta</span>
-        </button>
-        <button class="choice false" data-val="false">
-          <span class="ic">✕</span>Falso
-          <span class="sub">Quase certa, mas errada</span>
-        </button>
-      </div>
-      <div class="explain" id="explain">
-        <span class="verdict" id="verdict"></span>
-        <p id="explainText"></p>
-        <div class="why" id="whyText"></div>
-      </div>
-      <div class="nav">
-        <button class="next" id="nextBtn" hidden>
-          ${idx === QUESTIONS.length-1 ? 'Ver resultado' : 'Próxima'} <span aria-hidden="true">→</span>
-        </button>
-      </div>
-    </div>
-  `;
-
-  app.querySelectorAll('.choice').forEach(btn=>{
-    btn.addEventListener('click', ()=>handleAnswer(btn));
-  });
-  document.getElementById('nextBtn').addEventListener('click', advance);
-}
-
-function handleAnswer(btn){
-  if(answered) return;
-  answered = true;
-  const q = QUESTIONS[idx];
-  const picked = btn.dataset.val === 'true';
-  const correct = picked === q.answer;
-  if(correct) score++;
-  results.push(correct);
-
-  const btns = app.querySelectorAll('.choice');
-  btns.forEach(b=>{
-    b.disabled = true;
-    const bVal = b.dataset.val === 'true';
-    if(bVal === q.answer){ b.classList.add('correct'); }
-    else { b.classList.add('faded'); }
-  });
-  if(!correct){ btn.classList.remove('faded'); btn.classList.add('wrong'); }
-
-  // explicação
-  const exp = document.getElementById('explain');
-  const verdict = document.getElementById('verdict');
-  const text = document.getElementById('explainText');
-  const why = document.getElementById('whyText');
-
-  if(correct){
-    exp.classList.add('ok');
-    verdict.textContent = '✓ Você acertou!';
-  } else {
-    exp.classList.add('no');
-    verdict.textContent = '✕ Não é bem isso.';
-  }
-
-  // Monta o texto: mostramos a explicação do lado VERDADEIRO da questão.
-  if(q.answer === true){
-    text.textContent = q.explainTrue;
-    why.innerHTML = '<b>Por quê:</b> a afirmação está correta como enunciada.';
-  } else {
-    text.textContent = q.explainFalse;
-    why.innerHTML = '<b>A pegadinha:</b> a frase é “quase certa” — soa verdadeira, mas contém um erro que a torna falsa.';
-  }
-
-  requestAnimationFrame(()=>exp.classList.add('show'));
-  const nb = document.getElementById('nextBtn');
-  nb.hidden = false;
-  nb.focus();
-}
-
-function advance(){
-  idx++;
-  if(idx >= QUESTIONS.length){ renderResult(); }
-  else { renderQuestion(); }
-}
-
-/* ==========================================================
-   RESULTADO FINAL
-   ========================================================== */
-function renderResult(){
-  progressEl.style.display = 'none';
-  const total = QUESTIONS.length;
-  const pct = Math.round((score/total)*100);
-  const misses = total - score;
-
-  let tier, msg;
-  if(pct === 100){
-    tier = "Domínio pleno";
-    msg = "Nota máxima. Você distingue com clareza o conceito correto da versão “quase certa”. Está pronto para identificar oportunidades reais de IA na sua área e defendê-las.";
-  } else if(pct >= 75){
-    tier = "Sólido";
-    msg = "Muito bom. Você pegou a maioria das pegadinhas. Revise os pontos que escaparam e você terá um repertório confiável para conversar com o time de tecnologia.";
-  } else if(pct >= 50){
-    tier = "No caminho";
-    msg = "Base formada. Você já entende a direção, mas alguns conceitos “quase certos” ainda enganam. Vale reler o material de apoio nas partes que errou.";
-  } else {
-    tier = "Vale revisar";
-    msg = "Sem problema — o objetivo do quiz é justamente expor onde os conceitos confundem. Volte ao material de apoio e tente de novo; a segunda passada rende muito.";
-  }
-
-  const circ = 2 * Math.PI * 66;
-  const dash = (pct/100) * circ;
-
-  // aprovação: mais de 15 acertos (16+) libera a chamada para sugerir ferramenta
-  const aprovado = score > 15;
-  const approvalBlock = aprovado ? `
-      <div class="approval">
-        <div class="approval-badge">🎉 Parabéns!</div>
-        <p class="approval-msg">Você já pode ajudar a Hemobrás sugerindo uma ferramenta de IA interna usando <b>LLM</b>, <b>RAG</b> e <b>Agentes</b>. Clique no formulário e sugira sua ferramenta.</p>
-        <a class="btn-gold approval-cta" href="https://docs.google.com/forms/d/e/1FAIpQLSepoSFj89B48Sg12n0D83Eo8TGfh_bDJ7DyiX3hLTCwdiizQQ/viewform?usp=publish-editor" target="_blank" rel="noopener">Sugerir minha ferramenta de IA ↗</a>
-      </div>` : '';
-
-  app.innerHTML = `
-    <div class="card result">
-      <div class="ring">
-        <svg width="150" height="150" viewBox="0 0 150 150">
-          <circle cx="75" cy="75" r="66" fill="none" stroke="#E8D3D9" stroke-width="12"/>
-          <circle cx="75" cy="75" r="66" fill="none" stroke="url(#grad)" stroke-width="12"
-                  stroke-linecap="round" stroke-dasharray="${dash} ${circ}" id="ringArc"/>
-          <defs>
-            <linearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stop-color="#9E1B3A"/>
-              <stop offset="1" stop-color="#D4A24A"/>
-            </linearGradient>
-          </defs>
-        </svg>
-        <div class="pct"><b>${pct}%</b><span>${score} de ${total}</span></div>
-      </div>
-      <h2>Quiz concluído</h2>
-      <div class="tier">${tier}</div>
-      <p class="msg">${msg}</p>
-      <div class="tally">
-        <div class="hit"><div class="n">${score}</div><div class="l">Acertos</div></div>
-        <div class="miss"><div class="n">${misses}</div><div class="l">Erros</div></div>
-      </div>
-      ${approvalBlock}
-      <button class="restart" id="restart">Refazer o question-ario</button>
-    </div>
-  `;
-
-  // anima o anel
-  const arc = document.getElementById('ringArc');
-  arc.style.strokeDasharray = `0 ${circ}`;
-  requestAnimationFrame(()=>{
-    arc.style.transition = 'stroke-dasharray 1s cubic-bezier(.4,0,.2,1)';
-    arc.style.strokeDasharray = `${dash} ${circ}`;
-  });
-
-  document.getElementById('restart').addEventListener('click', ()=>{
-    idx = 0; score = 0; results.length = 0;
-    progressEl.style.display = 'flex';
-    renderQuestion();
-  });
-}
-
 /* ==========================================================
    LISTA DE PERGUNTAS (acordeão) — LLM, RAG, Agentes
    ========================================================== */
@@ -1418,10 +926,7 @@ let quizUnlocked = false;
 
 function startQuiz(){
   if(!quizUnlocked) return;
-  idx = 0; score = 0; results.length = 0;
-  progressEl.style.display = 'flex';
   showScreen('quiz');
-  renderQuestion();
 }
 
 const pathQuiz = document.getElementById('pathQuiz');
@@ -1434,8 +939,8 @@ function unlockQuiz(){
   pathQuiz.setAttribute('aria-disabled','false');
   document.getElementById('lockIc').textContent = '';
   document.getElementById('quizDesc').textContent =
-    '20 afirmações de verdadeiro ou falso. Cada uma parece certa — descubra qual é a “quase certa”.';
-  document.getElementById('quizCta').innerHTML = 'Começar o quiz <span aria-hidden="true">→</span>';
+    'Preencha o formulário final para concluir o treinamento e sugerir sua ideia de IA.';
+  document.getElementById('quizCta').innerHTML = 'Abrir o formulário <span aria-hidden="true">→</span>';
   setTimeout(()=>pathQuiz.classList.remove('pulse'), 1200);
 }
 
@@ -1447,12 +952,12 @@ const quizHintTxt = document.getElementById('quizHintTxt');
 doneCheck.addEventListener('change', ()=>{
   if(doneCheck.checked){
     goQuiz.disabled = false;
-    quizHintTxt.textContent = 'Pronto! Você já pode fazer o questionário.';
+    quizHintTxt.textContent = 'Pronto! Você já pode abrir o formulário.';
     quizHintTxt.classList.add('ready');
     unlockQuiz();
   } else {
     goQuiz.disabled = true;
-    quizHintTxt.textContent = 'Marque a caixa acima para liberar o questionário.';
+    quizHintTxt.textContent = 'Marque a caixa acima para liberar o formulário.';
     quizHintTxt.classList.remove('ready');
   }
 });
